@@ -47,7 +47,7 @@ const Navbar = () => {
             <Link href="/" className={activeClass("/")}>Home</Link>
           </li>
           <li>
-            <Link href="/ExploreCar" className={activeClass("/ExploreCar")}>Explore Car</Link>
+            <Link href="/ExploreCar" className={activeClass("/ExploreCar")}>Explore Cars</Link>
           </li>
           <li>
             <Link href="/AddCar" className={activeClass("/AddCar")}>Add Car</Link>

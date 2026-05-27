@@ -4,8 +4,8 @@ import Image from 'next/image';
 const Footer = () => {
     return (
         <div >
-            <footer className="footer sm:footer-horizontal bg-gray-500 text-base-content px-6 md:px-20 pb-6 pt-10 flex justify-between ">
-  <nav>
+            <footer className="footer sm:footer-horizontal bg-gray-500 text-base-content py-10  px-10 md:px-20 pb-6 pt-5 md:py-10 flex flex-col md:flex-row justify-between ">
+  <nav className='py-6 md:py-0'>
     <h6 className="footer-title text-2xl font-bold">About Section</h6>
    <div className="flex items-center ">
     <Image src="/sedan.png"  alt="DriveNext Logo" height={50} width={50}/>
@@ -16,15 +16,16 @@ const Footer = () => {
     DriveFleet offers premium, affordable car rentals and <br />
     seamless bookings to match your lifestyle on every mile.</p>
   </nav>
-  <nav className='flex flex-col'>
-    <h6 className="footer-title text-2xl font-bold">Contact Info</h6>
+
+  <nav className='flex flex-col '>
+    <h6 className="footer-title text-2xl font-bold pb-3">Contact Info</h6>
     <a className="link link-hover"> <span className='font-bold text-lg'>Address :</span>Sector 7, Uttara, Dhaka 1230.</a>
     <a className="link link-hover"><span className='font-bold text-lg'>Email :</span>   support@driveFleet.com</a>
     <a className="link link-hover"><span className='font-bold text-lg'>Phone :</span>   +880 1834 567890</a>
   </nav>
-  <nav>
-    <h6 className="footer-title text-2xl font-bold">Social</h6>
-    <div className="grid grid-flow-col gap-4">
+  <nav className='py-6 md:py-0'>
+    <h6 className="footer-title text-2xl font-bold pb-4">Social</h6>
+    <div className="grid grid-flow-col gap-0 md:gap-4">
       <a>
         <svg
           xmlns="http://www.w3.org/2000/svg"

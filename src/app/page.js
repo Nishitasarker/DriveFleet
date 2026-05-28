@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image";
 import AvailableCars from "../app/AvailableCars/page.jsx"
 import FeatureSection from "../app/FeatureSection/page.jsx"
+import QualitySection from "../app/QualitySection/page.jsx";
 import { usePathname } from "next/navigation";
 
 export default function Home() {
@@ -65,6 +66,7 @@ export default function Home() {
          <main className="w-full">
         <AvailableCars />
         <FeatureSection className="py-5"/>
+        <QualitySection/>
       </main>
 
     </div>

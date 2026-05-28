@@ -43,7 +43,7 @@ export default function Home() {
     </div>
   </div>
 
-     <Image src="/hero.webp"  alt="DriveNext Logo" height={500} width={500}/>
+     <Image src="/hero.webp"  alt="DriveNext Logo" height={500} width={500} priority/> 
 
 </div>
 

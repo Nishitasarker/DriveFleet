@@ -29,7 +29,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className="w-full bg-base-100 shadow-sm px-6 md:px-20 h-20 flex justify-between items-center border-b border-gray-100">
+    <div className="w-full bg-base-100 shadow-sm px-6 md:px-20 h-20 flex justify-between items-center border-b border-gray-100 ">
       
       {/* ১. বামে: লোগো বা ব্র্যান্ড নেম */}
      <div className="flex  items-center justify-center">
@@ -50,7 +50,7 @@ const Navbar = () => {
             <Link href="/ExploreCar" className={activeClass("/ExploreCar")}>Explore Cars</Link>
           </li>
           <li>
-            <Link href="/AddCar" className={activeClass("/AddCar")}>Add Car</Link>
+            <Link href="/AddCarForm" className={activeClass("/AddCarForm")}>Add Car</Link>
           </li>
           <li>
             <Link href="/MyBookings" className={activeClass("/MyBookings")}>My Bookings</Link>

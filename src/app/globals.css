@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+
+body {
+  @apply min-h-screen bg-gradient-to-b from-slate-50 via-sky-50/40 to-white text-zinc-900 antialiased;
+}

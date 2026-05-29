@@ -62,14 +62,14 @@ const Navbar = () => {
       {/* ৩. ডানে: লগইন / রেজিস্ট্রেশন অথবা ইউজার প্রোফাইল */}
       <div className="flex items-center gap-3">
         {!session ? (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3  ">
             {/* HeroUI Login Button (onPress ইউজ করা হয়েছে) */}
             <Button
               onPress={() => router.push("/LogIn")}
-              className={`font-semibold rounded-xl border-2 transition-all duration-200 ${
+              className={`font-semibold rounded-xl text-lg border-2 transition-all duration-200 ${
                 pathname === "/LogIn"
-                  ? "bg-blue-500 text-white border-blue-200 px-3 py-1 shadow-sm"
-                  : "bg-white text-blue-500 border-blue-200 px-3 py-1 hover:bg-blue-50/50"
+                  ? "bg-blue-500  text-white border-blue-200 px-2 py-1 shadow-sm"
+                  : "bg-white text-blue-500 border-blue-200 px-2 py-1 hover:bg-blue-50/50"
               }`}
             >
               Login
@@ -78,10 +78,10 @@ const Navbar = () => {
 
             <Button
               onPress={() => router.push("/RegisterPage")}
-              className={`font-semibold rounded-xl border-2 transition-all duration-200 ${
+              className={`font-semibold text-lg rounded-xl border-2 transition-all duration-200 ${
                 pathname === "/RegisterPage"
-                  ? "bg-sky-500 text-white border-sky-500 shadow-sm"
-                  : "bg-white text-sky-500 border-sky-500 hover:bg-sky-50/50"
+                  ? "bg-blue-500 text-white border-blue-200 px-2 py-1 shadow-sm"
+                  : "bg-slate-50/50 text-blue-500 border-blue-200 px-2 py-1 hover:bg-blue-50/50"
               }`}
             >
               Register

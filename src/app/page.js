@@ -19,8 +19,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       
       {/* ১. হিরো সেকশন (ফ্লেক্স লেআউট সহ ব্যাকগ্রাউন্ড) */}
-      <div className="flex justify-between flex-col md:flex-row px-6 md:px-20 items-center bg-gradient-to-b from-slate-50 via-sky-50/40 to-white py-12 md:py-20">
-        
+      <div className="flex justify-between flex-col md:flex-row px-6 md:px-20 items-center bg-white">
         {/* টেক্সট কন্টেন্ট */}
         <div className="hero-content text-center md:text-left pt-10 md:pt-0">
           <div className="max-w-md flex flex-col items-center md:items-start justify-center">

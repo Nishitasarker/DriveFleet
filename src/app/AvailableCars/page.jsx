@@ -11,11 +11,11 @@ const AvailableCarCard = ({ car }) => {
         <div className="w-full overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between">
             
             {/* ইমেজ সেকশন */}
-            <div className="relative h-40 w-full bg-slate-50/50 p-4 flex items-center justify-center">
+            <div className="relative h-48 w-full bg-slate-50/50 py-2 ">
                 <img 
                     src={imageUrl} 
                     alt={carName} 
-                    className="w-full h-full object-contain" 
+                    className="w-full h-full object-contain " 
                 />
                 
                 {/* মিনি এভেইলেবিলিটি ডট */}

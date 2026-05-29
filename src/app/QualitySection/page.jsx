@@ -35,7 +35,7 @@ const QualitySection = () => {
         </div>
 
         <div className="p-6 md:p-12 lg:p-16 flex flex-col justify-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#0f172a] mb-8">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700 mb-8">
             Only Quality For Clients
           </h2>
 

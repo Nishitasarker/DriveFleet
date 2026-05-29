@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import React from 'react';
 
 const ExploreCarCard = ({ car }) => {
@@ -18,7 +19,7 @@ const ExploreCarCard = ({ car }) => {
     <div className="w-full overflow-hidden rounded-2xl bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
       
       {/* Image Section */}
-      <div className="relative h-48 w-full bg-sky-50 p-2 flex items-center justify-center">
+      <div className="relative h-48 w-full bg-sky-50 py-2 flex items-center justify-center">
         <img 
           src={imageUrl} 
           alt={carName} 
@@ -54,9 +55,9 @@ const ExploreCarCard = ({ car }) => {
         </h3>
 
         {/* Description */}
-        <p className="mt-2 line-clamp-2 text-sm text-gray-600">
+        {/* <p className="mt-2 line-clamp-2 text-sm text-gray-600">
           {description}
-        </p>
+        </p> */}
 
         {/* Features Grid */}
         <div className="my-4 grid grid-cols-2 gap-3 border-t border-b border-gray-100 py-3 text-sm text-gray-600">
@@ -79,9 +80,10 @@ const ExploreCarCard = ({ car }) => {
         </div>
 
         {/* Action Button */}
-        <button className="w-full rounded-xl bg-blue-600 py-2.5 text-center text-base font-semibold text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 cursor-pointer">
+       <Link href={`/ExploreCar/${_id}`}>
+       <button className="w-full rounded-xl bg-blue-600 py-2.5 text-center text-base font-semibold text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 cursor-pointer">
          Car Details
-        </button>
+        </button></Link> 
       </div>
 
     </div>

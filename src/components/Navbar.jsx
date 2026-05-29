@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from '@heroui/react';
 import { usePathname, useRouter } from "next/navigation";
 
 const Navbar = () => {
@@ -62,17 +63,29 @@ const Navbar = () => {
       <div className="flex items-center gap-3">
         {!session ? (
           <div className="flex items-center gap-3">
-            <Link href="/LogIn">
-              <button className={`btn btn-sm md:btn-md btn-outline ${pathname === "/LogIn" ? "btn-success bg-sky-50" : "btn-success"}`}>
-                Login
-              </button>
-            </Link>
+            {/* HeroUI Login Button (onPress ইউজ করা হয়েছে) */}
+            <Button
+              onPress={() => router.push("/LogIn")}
+              className={`font-semibold rounded-xl border-2 transition-all duration-200 ${
+                pathname === "/LogIn"
+                  ? "bg-blue-500 text-white border-blue-200 px-3 py-1 shadow-sm"
+                  : "bg-white text-blue-500 border-blue-200 px-3 py-1 hover:bg-blue-50/50"
+              }`}
+            >
+              Login
+            </Button>
 
-            <Link href="/RegisterPage">
-              <button className={`btn btn-sm md:btn-md btn-outline ${pathname === "/RegisterPage" ? "btn-success bg-sky-50" : "btn-success"}`}>
-                Register
-              </button>
-            </Link>
+
+            <Button
+              onPress={() => router.push("/RegisterPage")}
+              className={`font-semibold rounded-xl border-2 transition-all duration-200 ${
+                pathname === "/RegisterPage"
+                  ? "bg-sky-500 text-white border-sky-500 shadow-sm"
+                  : "bg-white text-sky-500 border-sky-500 hover:bg-sky-50/50"
+              }`}
+            >
+              Register
+            </Button>
           </div>
         ) : (
           <div className="flex items-center gap-3">

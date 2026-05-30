@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from 'react-toastify'; 
@@ -18,9 +18,12 @@ import { authClient } from '@/lib/auth-client';
 
 const LogInPage = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+    setLoading(true);
     
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
@@ -30,13 +33,17 @@ const LogInPage = () => {
       await authClient.signIn.email({
         email,
         password,
-        callbackURL: '/'
       }, {
         onSuccess: () => {
-          toast.success("Login successful!");
-          router.push('/');
+          toast.success("Login successful! Redirecting...");
+          // টোস্ট মেসেজটি দেখার জন্য ১.৫ সেকেন্ড পর রিডাইরেক্ট করা হলো
+          setTimeout(() => {
+            router.push('/');
+            router.refresh();
+          }, 1500);
         },
         onError: (ctx) => {
+          setLoading(false);
           if (ctx.error.status === 401 || ctx.error.code === "USER_NOT_FOUND") {
             toast.error("Login failed. No account found with this email. Please register first.");
           } else {
@@ -45,6 +52,7 @@ const LogInPage = () => {
         }
       });
     } catch (err) {
+      setLoading(false);
       toast.error("Something went wrong. Please try again.");
     }
   };
@@ -56,8 +64,10 @@ const LogInPage = () => {
         callbackURL: "/", 
       }, {
         onSuccess: () => {
-          toast.success("Logged in with Google!");
-          router.push('/'); 
+          toast.success("Logged in with Google! Redirecting...");
+          setTimeout(() => {
+            router.push('/');
+          }, 1500);
         },
         onError: (ctx) => {
           toast.error(ctx.error.message || "Google login failed!");
@@ -79,7 +89,6 @@ const LogInPage = () => {
           <p className="text-sm text-gray-500">Welcome back! Please enter your details.</p>
         </div>
 
-        {/* Form এ autoComplete="off" দেওয়া হয়েছে */}
         <Form className="flex flex-col gap-4" onSubmit={onSubmit} autoComplete="off">
 
           {/* Email Field */}
@@ -105,7 +114,7 @@ const LogInPage = () => {
             <FieldError className="text-xs text-red-500 mt-1" />
           </TextField>
   
-          {/* Password Field (ভ্যালিডেশন: মডিফাইড ৬ ক্যারেক্টার ও আপার/লোয়ার কেস) */}
+          {/* Password Field */}
           <TextField
             isRequired
             minLength={6} 
@@ -141,10 +150,13 @@ const LogInPage = () => {
           {/* Login Button */}
           <div className="pt-2">
             <button 
-              className="w-full py-3 px-4 rounded-xl font-semibold text-sm text-center text-white bg-green-500 hover:bg-green-600 transition-all duration-150 active:scale-[0.99] shadow-sm" 
+              className={`w-full py-3 px-4 rounded-xl font-semibold text-sm text-center text-white transition-all duration-150 active:scale-[0.99] shadow-sm ${
+                loading ? "bg-green-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+              }`} 
               type="submit"
+              disabled={loading}
             >
-              Log In
+              {loading ? "Logging in..." : "Log In"}
             </button>
           </div>
 

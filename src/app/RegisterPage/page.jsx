@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from 'react-toastify'; 
@@ -18,16 +18,19 @@ import { authClient } from "@/lib/auth-client";
 
 const RegisterPage = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/", // Successful Google login-er por home route-e niye jabe
+        callbackURL: "/", 
       }, {
         onSuccess: () => {
-          toast.success("Logged in with Google!");
-          router.push('/'); 
+          toast.success("Logged in with Google! Redirecting...");
+          setTimeout(() => {
+            router.push('/'); 
+          }, 1500);
         },
         onError: (ctx) => {
           toast.error(ctx.error.message || "Google login failed!");
@@ -40,6 +43,8 @@ const RegisterPage = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+    setLoading(true);
     
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name");
@@ -48,28 +53,33 @@ const RegisterPage = () => {
     const password = formData.get("password");
 
     try {
-      const { data, error } = await authClient.signUp.email({
+      await authClient.signUp.email({
         name,
         image,
         email,
         password,
-        autoSignIn: false,
+        autoSignIn: false, // রেজিস্ট্রেশনের পর সরাসরি লগইন হবে না
       }, {
         onSuccess: async () => { 
           await authClient.signOut();
-          toast.success("Registration successful! Now please Log In.");
+          toast.success("Registration successful! Redirecting to Log In...");
 
+          // টোস্ট মেসেজ দেখার জন্য ২ সেকেন্ড পর রিডাইরেক্ট
           setTimeout(() => {
-            router.push('/LogIn'); // Registration sheshe Login page-e redirect hobe
+            router.push('/LogIn'); 
           }, 2000);
         },
         onError: (ctx) => {
-          toast.error(ctx.error.message || "Registration failed!");
+          setLoading(false);
+          toast.error(ctx.error.message || "Registration failed! Please try another email.");
         }
       });
     } catch (err) {
+      setLoading(false);
       toast.error("Something went wrong. Please try again.");
     }
+
+    
   };
 
   return (
@@ -83,7 +93,6 @@ const RegisterPage = () => {
           <p className="text-sm text-gray-500">Create your account to get started.</p>
         </div>
 
-        {/* Form elements with uniform layout */}
         <Form className="flex flex-col gap-4" onSubmit={onSubmit} autoComplete="off">
 
           {/* Name Field */}
@@ -129,7 +138,7 @@ const RegisterPage = () => {
             <FieldError className="text-xs text-red-500 mt-1" />
           </TextField>
 
-          {/* Password Field (ভ্যালিডেশন: ৬ ক্যারেক্টার, আপার ও লোয়ার কেস) */}
+          {/* Password Field */}
           <TextField
             isRequired
             minLength={6}
@@ -165,10 +174,13 @@ const RegisterPage = () => {
           {/* Register Button */}
           <div className="pt-2">
             <button 
-              className="w-full py-3 px-4 rounded-xl font-semibold text-sm text-center text-white bg-green-500 hover:bg-green-600 transition-all duration-150 active:scale-[0.99] shadow-sm" 
+              className={`w-full py-3 px-4 rounded-xl font-semibold text-sm text-center text-white transition-all duration-150 active:scale-[0.99] shadow-sm ${
+                loading ? "bg-green-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+              }`} 
               type="submit"
+              disabled={loading}
             >
-              Register
+              {loading ? "Creating Account..." : "Register"}
             </button>
           </div>
 

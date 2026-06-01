@@ -2,10 +2,24 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 // ১. হোমপেজের জন্য একটি সংক্ষিপ্ত এবং মিনিমালিস্টিক কার্ড কম্পোনেন্ট
 const AvailableCarCard = ({ car }) => {
     const { _id, carName, dailyPrice, carType, imageUrl, availability } = car;
+    const router = useRouter();
+
+    const handleViewDetails = () => {
+        // localStorage থেকে token চেক করা হচ্ছে
+        // আপনার auth system অনুযায়ী এটি পরিবর্তন করুন
+        const token = localStorage.getItem('token'); // অথবা 'accessToken', 'user', যেটি আপনি ব্যবহার করেন
+
+        // if (token) {
+        //     router.push(`/ExploreCar/${_id}`);
+        // } else {
+        //     router.push('../LogIn');
+        // }
+    };
 
     return (
         <div className="w-full overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between">
@@ -38,18 +52,23 @@ const AvailableCarCard = ({ car }) => {
                         </div>
                     </div>
 
-                    {/* গাড়ির নাম */}
+                    {/* গাড়ির নাম */}
                     <h3 className="mt-2 text-base font-bold text-gray-800 truncate capitalize">
                         {carName}
                     </h3>
                 </div>
 
-                {/* নিট অ্যান্ড ক্লিন ভিউ ডিটেইলস বাটন */}
+                {/* View Details বাটন — এখন auth check সহ */}
+                <Link href={`/ExploreCar/${_id}`}>
                 <div className="mt-4">
-                    <Link href={`/explore-cars/${_id}`} className="block w-full text-center rounded-xl bg-sky-500 hover:bg-sky-600 py-2 text-sm font-semibold text-white transition duration-150 ease-in-out shadow-sm cursor-pointer">
+                    <button
+                        onClick={handleViewDetails}
+                        className="block w-full text-center rounded-xl bg-sky-500 hover:bg-sky-600 py-2 text-sm font-semibold text-white transition duration-150 ease-in-out shadow-sm cursor-pointer"
+                    >
                         View Details
-                    </Link>
+                    </button>
                 </div>
+                </Link>
             </div>
 
         </div>
@@ -67,7 +86,6 @@ const AvailableCars = () => {
                 const res = await fetch('http://localhost:5000/destination', { cache: 'no-store' });
                 const data = await res.json();
                 
-                // শুধুমাত্র 'Available' গাড়ি ফিল্টার করা হচ্ছে
                 const filtered = data.filter(car => car.availability === 'Available');
                 setAvailableCars(filtered);
             } catch (error) {
@@ -90,7 +108,7 @@ const AvailableCars = () => {
     }
 
     return (
-        <section className=" py-16 px-4 sm:px-8">
+        <section className="py-16 px-4 sm:px-8">
             <div className="max-w-6xl mx-auto">
                 
                 {/* Section Header */}
@@ -106,9 +124,9 @@ const AvailableCars = () => {
                     </p>
                 </div>
 
-                         {availableCars.length > 0 ? (
+                {availableCars.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                              {availableCars.slice(0, availableCars.length >= 6 ? 6 : availableCars.length).map((car) => (
+                        {availableCars.slice(0, availableCars.length >= 6 ? 6 : availableCars.length).map((car) => (
                             <AvailableCarCard key={car._id} car={car} />
                         ))}
                     </div>

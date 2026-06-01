@@ -2,133 +2,141 @@
 
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-// 🚀 লজিক্যাল ফিক্স: Better Auth এর অফিশিয়াল ক্লায়েন্ট মেথড (অথবা আপনার কাস্টম ক্লায়েন্ট ইমপোর্ট)
-// সাধারণত Better Auth প্রজেক্টে authClient বা direct fetch দিয়ে সেশন নেওয়া হয়।
-// কোনো এক্সট্রা প্যাকেজ ঝামেলা এড়াতে আমরা সরাসরি উইন্ডো বা ইউনিভার্সাল ফেচ দিয়ে সেশন রিড করবো।
+import { authClient } from '@/lib/auth-client';
+// মডার্ন এবং ক্লিন আইকনের জন্য lucide-react ব্যবহার করা হয়েছে
+import { 
+  Car, 
+  Users, 
+  MapPin, 
+  DollarSign, 
+  FileText, 
+  Calendar, 
+  X, 
+  CheckCircle, 
+  AlertCircle,
+  Clock
+} from 'lucide-react';
 
 const CarDetails = ({ params }) => {
   const [unwrappedParams, setUnwrappedParams] = useState(null);
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
-  
   const [isOpen, setIsOpen] = useState(false);
   const [driverNeeded, setDriverNeeded] = useState("No");
   const [specialNote, setSpecialNote] = useState("");
   const [bookingLoading, setBookingLoading] = useState(false);
 
-  // 🚀 লজিক্যাল ফিক্স: লগইন করা Better Auth ইউজারের সেশন স্টেট
-  const [user, setUser] = useState(null); 
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
 
   useEffect(() => {
-    Promise.resolve(params).then((res) => setUnwrappedParams(res));
-    
-    // 🚀 Better Auth এর ক্লায়েন্ট সেশন রিয়াল-টাইম ক্যাচ করার সেফ মেথড
-    fetch('/api/auth/get-session') 
-      .then(async (res) => {
-        const text = await res.text();
-        return text ? JSON.parse(text) : null;
-      })
-      .then(session => {
-        // Better Auth সাধারণত session.user অথবা সরাসরি ডাটা অবজেক্টে ইউজার দেয়
-        if (session?.user) {
-          setUser(session.user);
-        } else if (session?.data?.user) {
-          setUser(session.data.user);
-        }
-      })
-      .catch(err => {
-        // ফলব্যাক ব্যাকআপ: যদি কাস্টম রাউটে সমস্যা থাকে, মূল সেশন চেক
-        fetch('/api/auth/session')
-          .then(async (r) => { const t = await r.text(); return t ? JSON.parse(t) : null; })
-          .then(s => { if(s?.user) setUser(s.user); })
-          .catch(e => console.log("Session sync silently skipped."));
-      });
+    Promise.resolve(params).then((res) => {
+      console.log("resolved params:", res); 
+      setUnwrappedParams(res);
+    });
   }, [params]);
 
   useEffect(() => {
     if (!unwrappedParams?.id) return;
 
-    fetch(`http://localhost:5000/destination/${unwrappedParams.id}`)
-      .then(async (res) => {
+    const fetchCar = async () => {
+      try {
+        console.log("Fetching token..."); 
+        const tokenRes = await fetch("/api/auth/token", { credentials: "include" });
+        const { token } = await tokenRes.json();
+        console.log("Token received:", !!token); 
+
+        console.log("Fetching car id:", unwrappedParams.id); 
+        const res = await fetch(`http://localhost:5000/destination/${unwrappedParams.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log("Car response status:", res.status); 
+
         const text = await res.text();
-        return text ? JSON.parse(text) : null;
-      })
-      .then((data) => {
-        if (data) {
-          setCar(data);
-        }
+        const data = text ? JSON.parse(text) : null;
+        if (data) setCar(data);
+      } catch (err) {
+        console.error("fetchCar error:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchCar();
   }, [unwrappedParams]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 gap-3">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-slate-500 font-medium text-sm animate-pulse">Loading car details...</p>
+      </div>
+    );
   }
 
   if (!car) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-red-500 text-sm font-semibold bg-white px-4 py-2 rounded-lg shadow-sm">
-          Car details could not be loaded!
-        </p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-red-100 max-w-sm w-full text-center space-y-3">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+          <p className="text-red-600 text-sm font-semibold">
+            Car details could not be loaded!
+          </p>
+        </div>
       </div>
     );
   }
 
   const { 
-    _id,
-    carName, 
-    dailyPrice, 
-    carType, 
-    seatCapacity, 
-    imageUrl, 
-    pickupLocation, 
-    availability, 
-    description 
+    _id, carName, dailyPrice, carType, 
+    seatCapacity, imageUrl, pickupLocation, 
+    availability, description 
   } = car;
 
   const handleBookingConfirm = async () => {
-    // 🚀 ডেভেলপমেন্ট পিরিয়ডে সেশন লকিং আটকাতে অটো-ডিটেক্ট বা ফলব্যাক মেল প্রোটেকশন
     if (!user || !user.email) {
       toast.error("Please login first to book a car!");
       return;
     }
-
     if (!specialNote.trim()) {
       toast.error("Please fill up the Special Instructions / Notes field!");
       return;
     }
-
     setBookingLoading(true);
 
     const bookingData = {
-       userId: user?.id || "authenticated_user", 
-       userEmail: user.email.trim().toLowerCase(), // আপনার লগইন করা কন্টিনিউয়াস ইমেইল
-       carId: _id,
-       carName: carName,
-       carImage: imageUrl,
-       carPrice: dailyPrice,
-       carType: carType,
-       driverNeeded: driverNeeded, 
-       specialNote: specialNote,   
-       bookedAt: new Date().toISOString() 
+      userId: user?.id,
+      userEmail: user.email.trim().toLowerCase(),
+      carId: _id,
+      carName,
+      carImage: imageUrl,
+      carPrice: dailyPrice,
+      carType,
+      driverNeeded,
+      specialNote,
+      bookedAt: new Date().toISOString()
     };
    
     try {
+      const tokenRes = await fetch("/api/auth/token", { credentials: "include" });
+      const { token } = await tokenRes.json();
+
+      const { data: tokenData } = await authClient.token();
+      console.log(tokenData);
+
       const res = await fetch('http://localhost:5000/booking', {
         method: "POST",
         headers: {
-          "content-type": "application/json"
+          "content-type": "application/json",
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(bookingData)
       });
 
       const text = await res.text();
-      const data = text ? JSON.parse(text) : { success: false, message: "Empty server response" };
+      const data = text ? JSON.parse(text) : { success: false };
       
       if (res.status === 400 || data.success === false) {
         toast.error(data.message || "You have already booked this car!");
@@ -138,8 +146,8 @@ const CarDetails = ({ params }) => {
 
       if (data.insertedId || data.success) {
         toast.success(`Success! You have successfully booked the ${carName}.`);
-        setIsOpen(false); 
-        setSpecialNote(""); 
+        setIsOpen(false);
+        setSpecialNote("");
         setDriverNeeded("No");
       } else {
         toast.error("Something went wrong. Please try again.");
@@ -155,95 +163,154 @@ const CarDetails = ({ params }) => {
   const isAvailable = availability === 'Available' || availability === true;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4 sm:p-6 relative">
-      <h2 className="text-3xl font-bold text-[#1e293b] mb-6 self-start max-w-sm mx-auto w-full flex justify-center items-center">
-        {carName} - Details
-      </h2>
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+      {/* হেডার সেকশন */}
+      <div className="w-full max-w-4xl mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            {carName}
+          </h2>
+          <p className="text-slate-500 text-sm mt-1">Explore features and reserve your ride</p>
+        </div>
+        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider ${
+          isAvailable ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+        }`}>
+          <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+          {isAvailable ? 'Available Now' : 'Rented Out'}
+        </span>
+      </div>
 
-      <div className="w-full max-w-md bg-slate-50/50 rounded-2xl shadow-[5px_5px_30px_rgba(0,0,0,0.25)] border border-gray-100 overflow-hidden p-4 space-y-4">
+      {/* মেইন কার্ড কন্টেইনার */}
+      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden grid grid-cols-1 md:grid-cols-12">
         
-        <div className="w-full h-48 bg-gray-100 rounded-xl overflow-hidden relative">
+        {/* বাম পাশ: ইমেজ সেকশন */}
+        <div className="md:col-span-5 relative bg-slate-900 min-h-[260px] md:min-h-full">
           <img 
             src={imageUrl || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=600"} 
             alt={carName} 
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover opacity-90 transition-transform duration-500 hover:scale-105" 
           />
+          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm text-xs font-bold text-slate-800">
+            {carType}
+          </div>
         </div>
 
-        <div className="space-y-1">
-          <div className="flex justify-between items-start gap-2">
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight leading-tight">
-              {carName}
-            </h1>
-            <div className="text-right shrink-0">
-              <span className="text-2xl font-bold text-gray-900">${dailyPrice}</span>
-              <span className="text-gray-400 text-xs block font-medium">/ Day</span>
+        {/* ডান পাশ: কার ডিটেইলস */}
+        <div className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+          <div>
+            {/* প্রাইস এবং টাইটেল */}
+            <div className="flex justify-between items-start border-b border-slate-100 pb-4">
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{carName}</h1>
+                <div className="flex items-center gap-1.5 text-slate-500 text-sm mt-1">
+                  <MapPin className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>{pickupLocation || "Downtown SF"}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center justify-end text-2xl font-black text-blue-600">
+                  <DollarSign className="w-5 h-5 -mr-1 shrink-0" />
+                  <span>{dailyPrice}</span>
+                </div>
+                <span className="text-slate-400 text-xs font-medium">per day</span>
+              </div>
+            </div>
+
+            {/* স্পেসিফিকেশন গ্রিড */}
+            <div className="grid grid-cols-2 gap-4 py-5">
+              <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
+                  <Car className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-medium">Type</p>
+                  <p className="text-sm font-semibold text-slate-800">{carType}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-medium">Capacity</p>
+                  <p className="text-sm font-semibold text-slate-800">{seatCapacity} Seats</p>
+                </div>
+              </div>
+            </div>
+
+            {/* ডেসক্রিপশন */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                <FileText className="w-3.5 h-3.5" /> Description
+              </h4>
+              <p className="text-sm text-slate-600 leading-relaxed bg-slate-50/50 p-3 rounded-xl border border-dashed border-slate-200">
+                {description || "Experience the premium drive with maximum comfort, advanced safety features, and top-tier performance tailored for your journey."}
+              </p>
             </div>
           </div>
-          <p className="text-base font-medium text-gray-600">
-            {carType} / {seatCapacity}-Seater
-          </p>
-        </div>
 
-        <div className="pt-2 border-t-2 border-gray-200 ">
-          <p className="text-md text-gray-500 leading-relaxed line-clamp-2" title={description}>
-            {description || "Experience the premium drive."}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-2 border-t-2 border-gray-200">
-          <div>
-            <p className="text-sm font-semibold text-gray-900">
-              Pickup: <span className="font-normal text-gray-600">{pickupLocation || "Downtown SF"}</span>
-            </p>
+          {/* বুকিং বাটন */}
+          <div className="pt-4 border-t border-slate-100">
+            <button 
+              onClick={() => setIsOpen(true)} 
+              disabled={!isAvailable}
+              className={`w-full py-4 px-6 rounded-2xl font-bold text-sm tracking-wide text-center text-white transition-all duration-200 shadow-md ${
+                isAvailable 
+                  ? 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98] shadow-blue-200 hover:shadow-lg' 
+                  : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+              }`}
+            >
+              {isAvailable ? 'Book This Car Now' : 'Currently Unavailable'}
+            </button>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-gray-900">
-              Status:{' '}
-              <span className={`font-semibold ${isAvailable ? 'text-green-600' : 'text-red-500'}`}>
-                {isAvailable ? 'Available' : 'Rent Out'}
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <div className="pt-2">
-          <button 
-            onClick={() => setIsOpen(true)}
-            disabled={!isAvailable}
-            className={`w-full py-3 px-4 rounded-xl font-semibold text-sm text-center text-white transition-all duration-150 ${
-              isAvailable
-                ? 'bg-[#3b82f6] hover:bg-[#2563eb] active:scale-[0.99] shadow-sm' 
-                : 'bg-gray-300 cursor-not-allowed shadow-none'
-            }`}
-          >
-            Book Now
-          </button>
         </div>
       </div>
 
+      {/* বুকিং কনফার্মেশন মোডাল */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 relative z-10">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
-              <h3 className="text-2xl font-bold text-slate-800">Confirm Your Booking</h3>
-              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={() => setIsOpen(false)} />
+          
+          <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-100 relative z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            
+            {/* মোডাল হেডার */}
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Confirm Your Booking</h3>
+                <p className="text-xs text-slate-500 mt-0.5">Please review the details below</p>
+              </div>
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
             
-            <div className="grid grid-cols-2 gap-2 text-base font-semibold text-slate-600 bg-slate-50 p-3.5 rounded-xl border border-slate-100 mb-4">
-              <p className="col-span-2 text-lg text-slate-800 font-bold border-b border-slate-200/60 pb-1 mb-1">{carName}</p>
-              <p>💰 Price: <span className="font-normal text-slate-700">${dailyPrice}/day</span></p>
-              <p>👥 Capacity: <span className="font-normal text-slate-700">{seatCapacity} Seats</span></p>
+            {/* কার এর সারসংক্ষেপ */}
+            <div className="bg-gradient-to-r from-slate-50 to-slate-100/50 p-4 rounded-2xl border border-slate-200/60 space-y-2 mb-5">
+              <p className="text-base font-bold text-slate-800">{carName}</p>
+              <div className="grid grid-cols-2 gap-y-2 text-xs font-semibold text-slate-600">
+                <p className="flex items-center gap-1 text-slate-500">
+                  <DollarSign className="w-3.5 h-3.5 text-blue-500" /> Price: <span className="font-bold text-slate-800">${dailyPrice}/day</span>
+                </p>
+                <p className="flex items-center gap-1 text-slate-500">
+                  <Users className="w-3.5 h-3.5 text-blue-500" /> Capacity: <span className="font-bold text-slate-800">{seatCapacity} Seats</span>
+                </p>
+              </div>
             </div>
 
+            {/* ইনপুট ফর্ম */}
             <div className="space-y-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Do you need a driver?</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
+                  <Car className="w-3.5 h-3.5 text-slate-400" /> Do you need a driver?
+                </label>
                 <select 
-                  value={driverNeeded}
+                  value={driverNeeded} 
                   onChange={(e) => setDriverNeeded(e.target.value)}
-                  className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm"
+                  className="w-full p-3 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 >
                   <option value="No">No, I will drive myself</option>
                   <option value="Yes">Yes, I need a driver</option>
@@ -251,21 +318,43 @@ const CarDetails = ({ params }) => {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Special Instructions <span className="text-red-500">*</span></label>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-slate-400" /> Special Instructions <span className="text-red-500">*</span>
+                </label>
                 <textarea 
-                  value={specialNote}
+                  value={specialNote} 
                   onChange={(e) => setSpecialNote(e.target.value)}
-                  placeholder="Any specific instructions..."
+                  placeholder="e.g., Delivery time preference, child seat requirement, etc." 
                   rows={3}
-                  className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm resize-none"
+                  className="w-full p-3 bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl text-sm text-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none placeholder:text-slate-400" 
                 />
               </div>
             </div>
 
-            <div className="flex gap-3 mt-6 pt-3 border-t border-slate-100">
-              <button onClick={() => setIsOpen(false)} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl">Cancel</button>
-              <button disabled={bookingLoading} onClick={handleBookingConfirm} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl disabled:bg-blue-300">
-                {bookingLoading ? "Confirming..." : "Confirm Booking"}
+            {/* অ্যাকশন বাটনসমূহ */}
+            <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                disabled={bookingLoading} 
+                onClick={handleBookingConfirm}
+                className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-blue-100 disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {bookingLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Confirming...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Confirm Booking</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

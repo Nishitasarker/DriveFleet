@@ -172,10 +172,10 @@ const RegisterPage = () => {
           </TextField>
 
           {/* Register Button */}
-          <div className="pt-2">
+          <div className="pt-2 text-base font-bold">
             <button 
               className={`w-full py-3 px-4 rounded-xl font-semibold text-sm text-center text-white transition-all duration-150 active:scale-[0.99] shadow-sm ${
-                loading ? "bg-green-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+                loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
               }`} 
               type="submit"
               disabled={loading}
@@ -185,7 +185,7 @@ const RegisterPage = () => {
           </div>
 
           {/* Link to LogIn Page */}
-          <div className="text-center text-sm text-gray-600 pt-2">
+          <div className="text-center font-medium text-sm text-gray-600 pt-2">
             <p>
               Already have an account?{" "}
               <Link href="/LogIn" className="text-red-500 hover:underline font-medium cursor-pointer">
@@ -204,7 +204,7 @@ const RegisterPage = () => {
           {/* Google Login Button */}
           <button
             type="button" 
-            className="w-full py-3 px-4 flex items-center justify-center gap-2 rounded-xl font-semibold text-sm text-gray-700 bg-white border-2 border-gray-200 hover:bg-gray-50 transition-all duration-150 active:scale-[0.99]" 
+            className="w-full py-3 px-4 flex items-center justify-center gap-2 rounded-xl font-semibold text-sm text-blue-700 bg-white border-2 border-blue-200 hover:bg-gray-50 transition-all duration-150 active:scale-[0.99]" 
             onClick={handleGoogleLogin}
           >
             <svg aria-label="Google logo" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

@@ -4,6 +4,7 @@ import { Button } from "@heroui/react";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 export function BookingCanceler({ bookingId }) {
     const [open, setOpen] = useState(false);
@@ -12,11 +13,14 @@ export function BookingCanceler({ bookingId }) {
 
     const handleCancelBooking = async () => {
         setLoading(true);
+
+        const {data:tokenData} = await authClient.token()
         try {
             const res = await fetch(`http://localhost:5000/booking/${bookingId}`, {
                 method: "DELETE",
                 headers: {
-                    "content-type": "application/json"
+                    "content-type": "application/json",
+                    authorization:`Bearer ${tokenData?.token}`
                 }
             });
             const data = await res.json();

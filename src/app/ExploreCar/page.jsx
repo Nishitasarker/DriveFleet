@@ -1,74 +1,74 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import ExploreCarCard from '../../components/ExploreCarCard'; // আপনার সঠিক পাথ অনুযায়ী রাখুন
+import ExploreCarCard from '../../components/ExploreCarCard';
 
 const ExploreCar = () => {
     const [cars, setCars] = useState([]);
-    const [filteredCars, setFilteredCars] = useState([]);
-    const [searchType, setSearchType] = useState('');
+    const [searchName, setSearchName] = useState('');
+    const [selectedType, setSelectedType] = useState('');
     const [sortByPrice, setSortByPrice] = useState('');
     const [loading, setLoading] = useState(true);
 
-    // API থেকে ডেটা ফেচ করা
     useEffect(() => {
         const fetchCars = async () => {
+            setLoading(true);
             try {
-                const res = await fetch('http://localhost:5000/destination', { cache: 'no-store' });
+                const params = new URLSearchParams();
+                if (searchName) params.append('search', searchName);
+                if (selectedType) params.append('carType', selectedType);
+
+                const res = await fetch(`http://localhost:5000/destination?${params.toString()}`, { cache: 'no-store' });
                 const data = await res.json();
-                setCars(data);
-                setFilteredCars(data); // শুরুতে সব গাড়ি দেখাবে
+                setCars(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error("Error fetching cars:", error);
+                setCars([]);
             } finally {
                 setLoading(false);
             }
         };
         fetchCars();
-    }, []);
+    }, [searchName, selectedType]);
 
-    
-    useEffect(() => {
-        let updatedCars = [...cars];
-
-      
-        if (searchType.trim() !== '') {
-            updatedCars = updatedCars.filter(car =>
-                car.carType.toLowerCase().includes(searchType.toLowerCase())
-            );
-        }
-
-        
-        if (sortByPrice === 'lowToHigh') {
-            updatedCars.sort((a, b) => a.dailyPrice - b.dailyPrice);
-        } else if (sortByPrice === 'highToLow') {
-            updatedCars.sort((a, b) => b.dailyPrice - a.dailyPrice);
-        }
-
-        setFilteredCars(updatedCars);
-    }, [searchType, sortByPrice, cars]);
-
-    if (loading) {
-        return <div className="text-center p-10 font-semibold text-lg">Loading Cars...</div>;
-    }
+    const sortedCars = [...cars].sort((a, b) => {
+        if (sortByPrice === 'lowToHigh') return a.dailyPrice - b.dailyPrice;
+        if (sortByPrice === 'highToLow') return b.dailyPrice - a.dailyPrice;
+        return 0;
+    });
 
     return (
         <div className="min-h-screen bg-gray-50 p-8">
             <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">Explore Cars</h1>
 
-            {/* --- Search and Filter Section --- */}
-            <div className="max-w-6xl mx-auto mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="max-w-6xl mx-auto mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
                 
-                {/* Search by Car Type */}
+                {/* Search by Car Name */}
                 <div className="flex flex-col">
-                    <label className="mb-4 text-xl font-medium text-gray-500 ml-3">Search by Car Type</label>
+                    <label className="mb-4 text-xl font-medium text-gray-500 ml-3">Search by Car Name</label>
                     <input
                         type="text"
-                        placeholder="e.g. Suv, Hatchback, Sedan, Luxury"
-                        value={searchType}
-                        onChange={(e) => setSearchType(e.target.value)}
+                        placeholder="e.g. Tesla, BMW, Toyota..."
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
                         className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm"
                     />
+                </div>
+
+                {/* Filter by Car Type */}
+                <div className="flex flex-col">
+                    <label className="mb-4 text-xl font-medium text-gray-500 ml-3">Filter by Car Type</label>
+                    <select
+                        value={selectedType}
+                        onChange={(e) => setSelectedType(e.target.value)}
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow-sm cursor-pointer"
+                    >
+                        <option value="">All Types</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Sedan">Sedan</option>
+                        <option value="Hatchback">Hatchback</option>
+                       
+                    </select>
                 </div>
 
                 {/* Sort by Price */}
@@ -84,14 +84,13 @@ const ExploreCar = () => {
                         <option value="highToLow">Price: High to Low</option>
                     </select>
                 </div>
-
             </div>
-            {/* ---------------------------------- */}
 
-            {/* Responsive Grid Layout */}
-            {filteredCars.length > 0 ? (
+            {loading ? (
+                <div className="text-center p-10 font-semibold text-lg">Loading Cars...</div>
+            ) : sortedCars.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                    {filteredCars.map(car => (
+                    {sortedCars.map(car => (
                         <ExploreCarCard key={car._id} car={car} />
                     ))}
                 </div>

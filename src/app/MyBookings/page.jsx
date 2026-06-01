@@ -11,7 +11,7 @@ const MyBookings = async () => {
     });
 
     const user = session?.user;
-    
+
     if (!user || !user.email) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
@@ -24,8 +24,18 @@ const MyBookings = async () => {
 
     const currentUserEmail = user.email.trim().toLowerCase();
 
+    // ✅ token নেওয়া হচ্ছে
+    const tokenRes = await auth.api.getToken({
+        headers: await headers()
+    });
+    const token = tokenRes?.token;
+
+    // ✅ token সহ fetch করা হচ্ছে
     const res = await fetch(`http://localhost:5000/booking/${encodeURIComponent(currentUserEmail)}`, {
-        cache: 'no-store'
+        cache: 'no-store',
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     });
 
     let bookings = [];
@@ -38,7 +48,7 @@ const MyBookings = async () => {
     return (
         <div className="min-h-screen bg-slate-50 py-8 px-4 sm:py-12 sm:px-6 lg:px-12">
             <div className="max-w-5xl mx-auto">
-                
+
                 <div className="mb-6 sm:mb-8">
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">My Bookings</h1>
                     <p className="text-xs sm:text-sm text-gray-500 mt-1">
@@ -47,14 +57,35 @@ const MyBookings = async () => {
                 </div>
 
                 {bookingList.length === 0 ? (
-                    <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300 shadow-sm">
-                        <span className="text-4xl block mb-3">🚗</span>
+                    /* Modern Moving Car Empty State */
+                    <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-dashed border-gray-300 shadow-sm px-4 overflow-hidden">
+                        
+                        {/* রোডের ড্যাশড বর্ডার এবং কার কন্টেইনার */}
+                        <div className="relative mb-6 w-48 h-12 border-b-2 border-dashed border-gray-200 flex items-end justify-center">
+                            <div 
+                                className="text-5xl pb-1"
+                                style={{ animation: 'drive 2s linear infinite' }}
+                            >
+                                🚗
+                            </div>
+                        </div>
+
+                        {/* কাস্টম কার ড্রাইভিং অ্যানিমেশন স্টাইল */}
+                        <style>{`
+                            @keyframes drive {
+                                0% { transform:scaleX(-1) translateX(70px); }
+                                100% { transform: scaleX(-1) translateX(-70px); }
+                            }
+                        `}</style>
+
                         <h3 className="text-lg font-semibold text-gray-900">No Bookings Found</h3>
-                        <p className="text-gray-500 text-sm mt-1">You haven't reserved any fleet yet with this email.</p>
+                        <p className="text-gray-500 text-sm mt-1 text-center max-w-xs">
+                            You haven't reserved any fleet yet with this email.
+                        </p>
                     </div>
                 ) : (
                     <>
-                        {/* ✅ Desktop/Tablet Table — md থেকে দেখাবে */}
+                        {/* Desktop/Tablet Table */}
                         <div className="hidden md:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
@@ -70,10 +101,10 @@ const MyBookings = async () => {
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 text-sm">
                                         {bookingList.map((booking) => {
-                                            const bookingDate = booking.bookedAt 
+                                            const bookingDate = booking.bookedAt
                                                 ? new Date(booking.bookedAt).toLocaleDateString('en-US', {
                                                     year: 'numeric', month: 'short', day: 'numeric'
-                                                  })
+                                                })
                                                 : "N/A";
 
                                             return (
@@ -81,9 +112,9 @@ const MyBookings = async () => {
                                                     <td className="py-4 px-6">
                                                         <div className="flex items-center gap-4">
                                                             <div className="w-16 h-12 rounded-lg bg-gray-100 overflow-hidden shrink-0 border border-gray-200">
-                                                                <img 
-                                                                    src={booking.carImage || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200"} 
-                                                                    alt={booking.carName} 
+                                                                <img
+                                                                    src={booking.carImage || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200"}
+                                                                    alt={booking.carName}
                                                                     className="w-full h-full object-cover"
                                                                 />
                                                             </div>
@@ -108,12 +139,12 @@ const MyBookings = async () => {
                                                     <td className="py-4 px-6">
                                                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                                            Confirmed  
+                                                            Confirmed
                                                         </span>
                                                     </td>
                                                     <td className="py-4 px-6 text-right">
                                                         <div className="flex justify-end">
-                                                            <BookingCanceler bookingId={booking._id}/>
+                                                            <BookingCanceler bookingId={booking._id} />
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -124,23 +155,22 @@ const MyBookings = async () => {
                             </div>
                         </div>
 
-                        {/* ✅ Mobile Card Layout — md এর নিচে দেখাবে */}
+                        {/* Mobile Card Layout */}
                         <div className="md:hidden flex flex-col gap-4">
                             {bookingList.map((booking) => {
-                                const bookingDate = booking.bookedAt 
+                                const bookingDate = booking.bookedAt
                                     ? new Date(booking.bookedAt).toLocaleDateString('en-US', {
                                         year: 'numeric', month: 'short', day: 'numeric'
-                                      })
+                                    })
                                     : "N/A";
 
                                 return (
                                     <div key={String(booking._id)} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
-                                        {/* Card Header */}
                                         <div className="flex items-center gap-3 mb-4">
                                             <div className="w-16 h-12 rounded-lg bg-gray-100 overflow-hidden shrink-0 border border-gray-200">
-                                                <img 
-                                                    src={booking.carImage || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200"} 
-                                                    alt={booking.carName} 
+                                                <img
+                                                    src={booking.carImage || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=200"}
+                                                    alt={booking.carName}
                                                     className="w-full h-full object-cover"
                                                 />
                                             </div>
@@ -156,7 +186,6 @@ const MyBookings = async () => {
                                             </span>
                                         </div>
 
-                                        {/* Card Details */}
                                         <div className="grid grid-cols-3 gap-2 mb-4 bg-slate-50 rounded-xl p-3">
                                             <div>
                                                 <p className="text-xs text-gray-400 mb-0.5">Type</p>
@@ -172,9 +201,8 @@ const MyBookings = async () => {
                                             </div>
                                         </div>
 
-                                        {/* Cancel Button */}
                                         <div className="flex justify-end">
-                                            <BookingCanceler bookingId={booking._id}/>
+                                            <BookingCanceler bookingId={booking._id} />
                                         </div>
                                     </div>
                                 );

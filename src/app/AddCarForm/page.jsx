@@ -1,5 +1,6 @@
 'use client';
 
+import { authClient } from '@/lib/auth-client';
 import { useState } from 'react';
 
 export default function AddCarForm() {
@@ -36,11 +37,14 @@ export default function AddCarForm() {
       seatCapacity: parseInt(formData.seatCapacity),
     };
 
+
+    const {data:tokenData} = await authClient.token()
     try {
       const response = await fetch("http://localhost:5000/destination", {
         method: 'POST',
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/json',
+          authorization:`Bearer ${tokenData?.token}`
         },
         body: JSON.stringify(carData) // সরাসরি প্রসেসড ডেটা পাঠানো হচ্ছে
       });

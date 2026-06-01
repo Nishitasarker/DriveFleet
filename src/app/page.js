@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     // পুরো পেজকে একটি মেইন রুট div দিয়ে মোড়ানো হয়েছে
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       
       {/* ১. হিরো সেকশন (ফ্লেক্স লেআউট সহ ব্যাকগ্রাউন্ড) */}
       <div className="flex justify-between flex-col md:flex-row px-6 md:px-20 items-center bg-white">

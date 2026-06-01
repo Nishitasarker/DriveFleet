@@ -48,23 +48,27 @@ const RegisterPage = () => {
     
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name");
-    const image = formData.get("image");
+    let image = formData.get("image"); // const variables change kora jay na, tai let kora holo
     const email = formData.get("email");
     const password = formData.get("password");
+
+    // ✨ লজিক: ইউজার যদি ইমেজ না দেয় (ফাঁকা রাখে), তবে ডিফল্ট '/user.png' সেট হবে
+    if (!image || image.trim() === "") {
+      image = "/user.png";
+    }
 
     try {
       await authClient.signUp.email({
         name,
-        image,
+        image, // এহনে ডিফল্ট বা ইউজারের দেওয়া ইউআরএল চলে যাবে
         email,
         password,
-        autoSignIn: false, // রেজিস্ট্রেশনের পর সরাসরি লগইন হবে না
+        autoSignIn: false, 
       }, {
         onSuccess: async () => { 
           await authClient.signOut();
           toast.success("Registration successful! Redirecting to Log In...");
 
-          // টোস্ট মেসেজ দেখার জন্য ২ সেকেন্ড পর রিডাইরেক্ট
           setTimeout(() => {
             router.push('/LogIn'); 
           }, 2000);
@@ -78,8 +82,6 @@ const RegisterPage = () => {
       setLoading(false);
       toast.error("Something went wrong. Please try again.");
     }
-
-    
   };
 
   return (
@@ -105,11 +107,14 @@ const RegisterPage = () => {
             <FieldError className="text-xs text-red-500 mt-1" />
           </TextField>
 
-          {/* Photo URL Field */}
-          <TextField isRequired name="image" type="text" className="w-full">
-            <Label className="text-sm font-semibold text-gray-700">Photo URL</Label>
+          {/* 🌟 Photo URL Field (এখানে 'isRequired' রিমুভ করা হয়েছে) */}
+          <TextField name="image" type="text" className="w-full">
+            <div className="flex justify-between items-center">
+              <Label className="text-sm font-semibold text-gray-700">Photo URL</Label>
+              <span className="text-xs text-gray-400 font-normal">(Optional)</span>
+            </div>
             <Input 
-              placeholder="https://example.com/photo.jpg" 
+              placeholder="https://example.com/photo.jpg (Optional)" 
               className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm" 
             />
             <FieldError className="text-xs text-red-500 mt-1" />

@@ -2,6 +2,7 @@
 
 import { authClient } from '@/lib/auth-client';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export default function AddCarForm() {
   const [loading, setLoading] = useState(false);
@@ -25,35 +26,36 @@ export default function AddCarForm() {
     }));
   };
 
-  // ফর্ম সাবমিট হ্যান্ডলার (সম্পূর্ণ ফাংশনটি এখন এক সুতোয় বাঁধা)
+  // ফর্ম সাবমিট হ্যান্ডলার
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // ডেটাগুলোকে সঠিক ফরম্যাটে কনভার্ট করে নেওয়া (যেমন: নাম্বার)
+    // ডেটাগুলোকে সঠিক ফরম্যাটে কনভার্ট করে নেওয়া (যেমন: নাম্বার)
     const carData = {
       ...formData,
       dailyPrice: parseFloat(formData.dailyPrice),
       seatCapacity: parseInt(formData.seatCapacity),
     };
 
-
-    const {data:tokenData} = await authClient.token()
     try {
+      const { data: tokenData } = await authClient.token();
       const response = await fetch("http://localhost:5000/destination", {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
-          authorization:`Bearer ${tokenData?.token}`
+          authorization: `Bearer ${tokenData?.token}`
         },
         body: JSON.stringify(carData) // সরাসরি প্রসেসড ডেটা পাঠানো হচ্ছে
       });
 
-      const data = await response.json(); // await এবং সঠিক ভেরিয়েবল ব্যবহার করা হয়েছে
+      const data = await response.json(); // await এবং সঠিক ভেরিয়েবল ব্যবহার করা হয়েছে
       console.log("Server Response:", data);
 
       if (response.ok) {
-        alert('Car added successfully!');
+        // সফল মেসেজ টোস্ট
+        toast.success('Car added successfully!');
+        
         // ফর্ম রিসেট করার জন্য
         setFormData({
           carName: '',
@@ -66,11 +68,13 @@ export default function AddCarForm() {
           description: '',
         });
       } else {
-        alert('Something went wrong on the server!');
+        // সার্ভার এরর টোস্ট
+        toast.error('Something went wrong on the server!');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Failed to connect to the server!');
+      // কানেকশন ফেইল্ড টোস্ট
+      toast.error('Failed to connect to the server!');
     } finally {
       setLoading(false);
     }
@@ -117,22 +121,23 @@ export default function AddCarForm() {
             </div>
 
             {/* Car Type */}
-           <div>
-      <label className="mb-1 block text-sm font-medium text-gray-700">Car Type</label>
-         <select
-           name="carType"
-           value={formData.carType}
-           onChange={handleChange}
-           required
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-  >
-    <option value="" disabled>Select type</option> 
-    <option value="SUV">SUV</option>
-    <option value="Sedan">Sedan</option>
-    <option value="Hatchback">Hatchback</option>
-    <option value="Luxury">Luxury</option>
-  </select>
-</div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Car Type</label>
+              <select
+                name="carType"
+                value={formData.carType}
+                onChange={handleChange}
+                required
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="" disabled>Select type</option> 
+                <option value="SUV">SUV</option>
+                <option value="Sedan">Sedan</option>
+                <option value="Hatchback">Hatchback</option>
+                <option value="Luxury">Luxury</option>
+              </select>
+            </div>
+
             {/* Seat Capacity */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">Seat Capacity</label>

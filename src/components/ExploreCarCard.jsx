@@ -19,7 +19,7 @@ const ExploreCarCard = ({ car }) => {
     <div className="w-full overflow-hidden rounded-2xl bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
       
       {/* Image Section */}
-      <div className="relative h-48 w-full bg-sky-50 py-2 flex items-center justify-center">
+      <div className="relative h-48 w-full bg-gray-100 flex items-center justify-center">
         <img 
           src={imageUrl} 
           alt={carName} 

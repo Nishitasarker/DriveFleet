@@ -67,6 +67,7 @@ const ExploreCar = () => {
                         <option value="SUV">SUV</option>
                         <option value="Sedan">Sedan</option>
                         <option value="Hatchback">Hatchback</option>
+                        <option value="Luxury">Luxury</option>
                        
                     </select>
                 </div>

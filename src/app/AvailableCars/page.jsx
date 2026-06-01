@@ -22,15 +22,15 @@ const AvailableCarCard = ({ car }) => {
     };
 
     return (
-        <div className="w-full overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between">
-            
+        <div className="w-full overflow-hidden rounded-2xl bg-white border border-gray-200/60 shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.28)] flex flex-col justify-between">            
             {/* ইমেজ সেকশন */}
-            <div className="relative h-48 w-full bg-slate-50/50 py-2 ">
-                <img 
-                    src={imageUrl} 
-                    alt={carName} 
-                    className="w-full h-full object-contain " 
-                />
+             {/* Image Section */}
+      <div className="relative h-48 w-full bg-gray-100 flex items-center justify-center">
+        <img 
+          src={imageUrl} 
+          alt={carName} 
+          className="w-full h-full object-contain" 
+        />
                 
                 {/* মিনি এভেইলেবিলিটি ডট */}
                 <span className="absolute top-3 right-3 rounded-full bg-white/90 backdrop-blur-sm px-2.5 py-0.5 text-[10px] font-bold uppercase text-green-600 border border-green-200 shadow-sm">

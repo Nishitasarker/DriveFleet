@@ -165,8 +165,8 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <div className="flex items-center gap-2 md:gap-3">
-              <h2 className="hidden md:block font-medium text-gray-700">{user?.name}</h2>
+            <div className="flex text-base items-center gap-2 md:gap-3">
+              <h2 className="hidden text-lg font-bold md:block  text-gray-700 ">{user?.name ? user.name.split(' ')[0].toUpperCase() : ''}</h2>
               
               <div className="relative">
                 {/* অ্যাভাটার বাটন */}
@@ -175,7 +175,7 @@ const Navbar = () => {
                   className="avatar block cursor-pointer focus:outline-none focus:scale-105 transition-transform"
                 >
                   <div className="w-9 h-9 md:w-10 md:h-10 rounded-full ring ring-sky-500 ring-offset-base-100 ring-offset-2 overflow-hidden">
-                    <Image src={user?.image || "/female.png"} alt="User" width={40} height={40} className="rounded-full object-cover" />
+                    <Image src={user?.image || "/user.png"} alt="User" width={40} height={40} className="rounded-full object-cover" />
                   </div>
                 </button>
                 
@@ -193,11 +193,11 @@ const Navbar = () => {
                         Add Car
                       </Link>
                       <Link href="/MyBookings" className={`flex items-center gap-3 px-4 py-3 text-[17px] font-semibold rounded-2xl transition-all duration-200 ${pathname === "/MyBookings" ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-gray-50"}`}>
-                        <Calendar size={22} className={pathname === "/MyBookings" ? "text-blue-600" : "text-slate-700"} />
+                        <Calendar size={22} className={pathname === "/MyBookings" ? "text-blue-600" : "text-blue-500"} />
                         My Bookings
                       </Link>
                       <Link href="/MyAddedCars" className={`flex items-center gap-3 px-4 py-3 text-[17px] font-semibold rounded-2xl transition-all duration-200 ${pathname === "/MyAddedCars" ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-gray-50"}`}>
-                        <LayoutGrid size={22} className={pathname === "/MyAddedCars" ? "text-blue-600" : "text-slate-700"} />
+                        <LayoutGrid size={22} className={pathname === "/MyAddedCars" ? "text-blue-600" : "text-blue-500"} />
                         My Added Cars
                       </Link>
                       <button onClick={handleLogOut} className="w-full flex items-center gap-3 px-4 py-3 text-[17px] font-semibold rounded-2xl text-red-500 hover:bg-red-50/70 transition-all duration-200 mt-1">

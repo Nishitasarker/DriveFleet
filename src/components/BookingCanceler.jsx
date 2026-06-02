@@ -8,17 +8,20 @@ import toast, { Toaster } from "react-hot-toast";
 
 export function BookingCanceler({ bookingId, onDeleteSuccess }) {
     const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
 
     const handleCancelBooking = async () => {
-          setOpen(false);
+        setOpen(false);
+        
         if (onDeleteSuccess) {
             onDeleteSuccess(bookingId); 
         }
         
-        toast.success("Booking canceled successfully!", { duration: 1500 });
+        toast.success("Booking canceled successfully!", { 
+            duration: 800,
+            id: bookingId
+        });
 
-            try {
+        try {
             const tokenRes = await authClient.token();
             const token = tokenRes?.token || tokenRes?.data?.token || tokenRes;
 
@@ -29,9 +32,9 @@ export function BookingCanceler({ bookingId, onDeleteSuccess }) {
                     "authorization": `Bearer ${token}`
                 }
             });
-                   } catch (err) {
+        } catch (err) {
             console.error("Background cancel failed:", err);
-            toast.error("Failed to sync with server. Please reload.");
+            toast.error("Failed to sync with server. Please reload.", { duration: 1500 });
         }
     };
 

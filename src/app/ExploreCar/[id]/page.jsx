@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
-// মডার্ন এবং ক্লিন আইকনের জন্য lucide-react ব্যবহার করা হয়েছে
+import Link from 'next/link'; 
+// মডার্ন এবং ক্লিন আইকনের জন্য lucide-react ব্যবহার করা হয়েছে
 import { 
   Car, 
   Users, 
@@ -14,7 +15,8 @@ import {
   X, 
   CheckCircle, 
   AlertCircle,
-  Clock
+  Clock,
+  Home 
 } from 'lucide-react';
 
 const CarDetails = ({ params }) => {
@@ -43,6 +45,21 @@ const CarDetails = ({ params }) => {
       try {
         console.log("Fetching token..."); 
         const tokenRes = await fetch("/api/auth/token", { credentials: "include" });
+        
+        // টোকেন এপিআই যদি কোনো কারণে রেসপন্স না দেয় (HTML বা ৪MD দেয়)
+        if (!tokenRes.ok) {
+          console.error("Token API failed with status:", tokenRes.status);
+          setCar(null); // ৪MD পেজে নিয়ে যাওয়ার জন্য
+          return;
+        }
+
+        const tokenContentType = tokenRes.headers.get("content-type");
+        if (!tokenContentType || !tokenContentType.includes("application/json")) {
+          console.error("Expected JSON token, got HTML");
+          setCar(null); // ৪MD পেজে নিয়ে যাওয়ার জন্য
+          return;
+        }
+
         const { token } = await tokenRes.json();
         console.log("Token received:", !!token); 
 
@@ -54,11 +71,30 @@ const CarDetails = ({ params }) => {
         });
         console.log("Car response status:", res.status); 
 
+        // কার এপিআই রেসপন্স ঠিক না থাকলে (যেমন ভুল আইডি হলে ৫MD বা ৪MD দিলে)
+        if (!res.ok) {
+          setCar(null);
+          return;
+        }
+
+        const carContentType = res.headers.get("content-type");
+        if (!carContentType || !carContentType.includes("application/json")) {
+          console.error("Expected JSON car data, got HTML");
+          setCar(null);
+          return;
+        }
+
         const text = await res.text();
         const data = text ? JSON.parse(text) : null;
-        if (data) setCar(data);
+        
+        if (data) {
+          setCar(data);
+        } else {
+          setCar(null);
+        }
       } catch (err) {
         console.error("fetchCar error:", err);
+        setCar(null); // ক্যাচ ব্লকে এরর খেলেও ৪MD পেজ শো করবে
       } finally {
         setLoading(false);
       }
@@ -76,14 +112,35 @@ const CarDetails = ({ params }) => {
     );
   }
 
+  // API রেসপন্স না দিলে বা ভুল আইডি হলে এই কাস্টম ৪MD পেজটি দেখাবে
   if (!car) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-red-100 max-w-sm w-full text-center space-y-3">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
-          <p className="text-red-600 text-sm font-semibold">
-            Car details could not be loaded!
-          </p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+        <div className="max-w-md w-full text-center space-y-6 bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+          <div className="relative flex justify-center">
+            <div className="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full w-32 h-32 mx-auto"></div>
+            <div className="relative bg-red-50 text-red-500 p-5 rounded-2xl border border-red-100">
+              <AlertCircle className="w-14 h-14" />
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <h1 className="text-6xl font-black text-slate-300 tracking-tight">404</h1>
+            <h2 className="text-xl font-bold text-slate-800">Car Not Found!</h2>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              Sorry, the vehicle you are looking for doesn't exist, server is offline, or might have been removed.
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <Link 
+              href="/ExploreCar" 
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-blue-100 transition-all active:scale-[0.98]"
+            >
+              <Home className="w-4 h-4" />
+              Back to Showroom
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -121,6 +178,8 @@ const CarDetails = ({ params }) => {
    
     try {
       const tokenRes = await fetch("/api/auth/token", { credentials: "include" });
+      if (!tokenRes.ok) throw new Error("Token generation failed");
+      
       const { token } = await tokenRes.json();
 
       const { data: tokenData } = await authClient.token();

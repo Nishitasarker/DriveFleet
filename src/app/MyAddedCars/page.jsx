@@ -45,8 +45,7 @@ export default function MyAddedCars() {
     fetchMyCars();
   }, []);
 
-  // ২. আপডেট মোডাল ওপেন এবং ডাটা সেট করার ফাংশন
-  const handleUpdateClick = (car) => {
+    const handleUpdateClick = (car) => {
     setSelectedCar(car);
     setUpdateFormData({
       dailyPrice: car.dailyPrice,
@@ -59,8 +58,7 @@ export default function MyAddedCars() {
     setIsUpdateModalOpen(true);
   };
 
-  // ৩. আপডেট ফর্ম সাবমিট হ্যান্ডলার
-  const handleUpdateSubmit = async (e) => {
+   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
       const { data: tokenData } = await authClient.token();

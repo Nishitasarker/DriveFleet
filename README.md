@@ -2,6 +2,9 @@
 
 **DriveFleet** is a modern, high-performance car rental web application designed to deliver an elite, frictionless user experience for searching, viewing, and booking premium vehicles. Engineered using a decoupled modern stack, it features enterprise-grade error guardrails, secure session token handling, and a highly responsive dashboard.
 
+🔗 **Live Deployment:** [https://car-app-tawny.vercel.app](https://car-app-tawny.vercel.app)
+💻 **Backend API:** [https://car-app-server-delta.vercel.app](https://car-app-server-delta.vercel.app)
+
 ---
 
 ## 🛠️ Technology Stack & Frameworks
@@ -14,7 +17,7 @@ This platform is built with cutting-edge tools to ensure blazing-fast performanc
 *   **Authentication & Security:** Better Auth / Custom Auth Client implementing secure HTTP-Only cookie contexts and dynamic JWT token rotation.
 *   **Iconography & Micro-interactions:** Lucide React for modern SVG rendering and crisp visual feedback.
 *   **User Notifications:** React Hot Toast for non-blocking, elegant context-aware alerts.
-*   **Backend Support:** Node.js / Express.js REST API handling high-throughput database interactions (`http://localhost:5000`).
+*   **Backend Support:** Node.js / Express.js REST API handling high-throughput database interactions (`https://car-app-server-delta.vercel.app`).
 
 ---
 
@@ -66,15 +69,13 @@ Bash
 3. Configure Environment Matrix:
 Create a .env.local file inside the root repository directory:
 
-Code snippet
-   NEXT_PUBLIC_API_URL=http://localhost:5000
-
+NEXT_PUBLIC_SERVER_URL=[https://car-app-server-delta.vercel.app](https://car-app-server-delta.vercel.app)
 
 4. Launch Application Context (Turbopack Engine):
 
 Bash
    npm run dev
-Navigate to http://localhost:3000 to view your client instance.
+Open http://localhost:3000 inside your browser to view the client instance locally.
 
 ⚠️ Copyright & Intellectual Property
 All rights reserved. This repository and its full source code are the exclusive intellectual property of the author. No part of this application may be copied, reproduced, modified, or distributed without explicit written permission from the owner.

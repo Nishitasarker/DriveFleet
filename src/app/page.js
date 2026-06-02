@@ -15,13 +15,10 @@ export default function Home() {
       : "text-black";
 
   return (
-    // পুরো পেজকে একটি মেইন রুট div দিয়ে মোড়ানো হয়েছে
-    <div className="min-h-screen ">
+       <div className="min-h-screen ">
       
-      {/* ১. হিরো সেকশন (ফ্লেক্স লেআউট সহ ব্যাকগ্রাউন্ড) */}
-      <div className="flex justify-between flex-col md:flex-row px-6 md:px-20 items-center bg-white">
-        {/* টেক্সট কন্টেন্ট */}
-        <div className="hero-content text-center md:text-left pt-10 md:pt-0">
+           <div className="flex justify-between flex-col md:flex-row px-6 md:px-20 items-center bg-white">
+           <div className="hero-content text-center md:text-left pt-10 md:pt-0">
           <div className="max-w-md flex flex-col items-center md:items-start justify-center">
             <span className="text-sm uppercase tracking-widest text-sky-500 font-semibold mb-4">
               Welcome to DriveFleet
@@ -49,8 +46,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* হিরো ইমেজ */}
-        <div className="mt-10 md:mt-0 w-full md:w-auto flex justify-center">
+              <div className="mt-10 md:mt-0 w-full md:w-auto flex justify-center">
           <Image 
             src="/hero.webp"  
             alt="DriveNext Hero" 

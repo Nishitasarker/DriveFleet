@@ -6,11 +6,9 @@ const NotFound = () => {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-100 to-base-300 px-6 py-12">
             <div className="text-center max-w-lg bg-base-100 pt-20 pb-5 px-10 rounded-3xl shadow-2xl border border-gray-300 relative overflow-hidden">
                 
-                {/* Top Accent Bar */}
-               
+                  
 
-                {/* 404 & Car Animation Area */}
-                <div className="flex flex-col items-center justify-center mb-6">     
+                    <div className="flex flex-col items-center justify-center mb-6">     
                     
                     {/* Car and Road Track (Fixed Position) */}
                     <div className="w-full max-w-[200px] relative h-8 flex flex-col justify-end items-center">
@@ -18,25 +16,21 @@ const NotFound = () => {
                         <div className="text-5xl animate-pulse transform -translate-y-1">
                             🚗💨
                         </div>
-                        {/* Road Line */}
-                        <div className="w-full h-[3px] bg-gradient-to-r from-transparent via-base-content/30 to-transparent rounded-full"></div>
+                            <div className="w-full h-[3px] bg-gradient-to-r from-transparent via-base-content/30 to-transparent rounded-full"></div>
                     </div>
                 </div>
                 
-                {/* Professional Error Message */}
-                <h2 className="text-3xl font-bold text-gray-800 mb-3 tracking-tight">
+                     <h2 className="text-3xl font-bold text-gray-800 mb-3 tracking-tight">
                     Route Not Found
                 </h2>
                 <p className="text-base-content/70 text-gray-700 mb-8 leading-relaxed">
                     The page you are looking for might have been removed, had its name changed, or is temporarily unavailable. Let's get your journey back on track.
                 </p>
 
-                {/* Highly Visible Back to Home Button */}
-                <div className="flex justify-center">
+                     <div className="flex justify-center">
                     <Link href="/" className="inline-block w-full sm:w-auto">
                         <button className="btn bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base px-8 py-3 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-3 w-full sm:w-64 border-none">
-                            {/* Home Icon */}
-                            <svg 
+                                 <svg 
                                 xmlns="http://www.w3.org/2000/svg" 
                                 fill="none" 
                                 viewBox="0 0 24 24" 
@@ -51,8 +45,7 @@ const NotFound = () => {
                     </Link>
                 </div>
 
-                {/* Decorative Professional Footer */}
-                <div className="mt-10 pt-6 border-t border-gray-400 text-sm text-base-content/40 tracking-widest font-mono">
+                    <div className="mt-10 pt-6 border-t border-gray-400 text-sm text-base-content/40 tracking-widest font-mono">
                     DRIVEFLEET • GPS SIGNAL LOST
                 </div>
             </div>

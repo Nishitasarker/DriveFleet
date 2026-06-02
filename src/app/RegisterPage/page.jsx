@@ -106,8 +106,7 @@ const RegisterPage = () => {
             <FieldError className="text-xs text-red-500 mt-1" />
           </TextField>
 
-          {/* 🌟 Photo URL Field (এখানে 'isRequired' রিমুভ করা হয়েছে) */}
-          <TextField name="image" type="text" className="w-full">
+            <TextField name="image" type="text" className="w-full">
             <div className="flex justify-between items-center">
               <Label className="text-sm font-semibold text-gray-700">Photo URL</Label>
               <span className="text-xs text-gray-400 font-normal">(Optional)</span>
@@ -119,8 +118,7 @@ const RegisterPage = () => {
             <FieldError className="text-xs text-red-500 mt-1" />
           </TextField>
 
-          {/* Email Field */}
-          <TextField
+             <TextField
             isRequired
             name="email"
             type="email"
@@ -142,8 +140,7 @@ const RegisterPage = () => {
             <FieldError className="text-xs text-red-500 mt-1" />
           </TextField>
 
-          {/* Password Field */}
-          <TextField
+            <TextField
             isRequired
             minLength={6}
             name="password"

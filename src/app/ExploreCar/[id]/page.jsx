@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast'; // Toaster ইম্পোর্ট করা হয়েছে
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link'; 
 import { 
@@ -150,11 +150,11 @@ const CarDetails = ({ params }) => {
 
   const handleBookingConfirm = async () => {
     if (!user || !user.email) {
-      toast.error("Please login first to book a car!");
+      toast.error("Please login first to book a car!", { duration: 2000 });
       return;
     }
     if (!specialNote.trim()) {
-      toast.error("Please fill up the Special Instructions / Notes field!");
+      toast.error("Please fill up the Special Instructions / Notes field!", { duration: 2000 });
       return;
     }
     setBookingLoading(true);
@@ -191,19 +191,21 @@ const CarDetails = ({ params }) => {
       const data = text ? JSON.parse(text) : { success: false };
       
       if (data.insertedId || data.success) {
-        toast.success(`Success! You have successfully booked the ${carName}.`);
+               toast.success(`Success! Booked ${carName}.`, {
+          duration: 1500, 
+        });
+
         setIsOpen(false);
         setSpecialNote("");
         setDriverNeeded("No");
         
-       
-        setCar(prev => ({ ...prev, bookingCount: (prev.bookingCount || 0) + 1 }));
+               setCar(prev => ({ ...prev, bookingCount: (prev.bookingCount || 0) + 1 }));
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.", { duration: 2000 });
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to connect to the server.");
+      toast.error("Failed to connect to the server.", { duration: 2000 });
     } finally {
       setBookingLoading(false);
     }
@@ -213,7 +215,8 @@ const CarDetails = ({ params }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-   
+           <Toaster position="top-center" reverseOrder={false} />
+
       <div className="w-full max-w-4xl mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -223,7 +226,6 @@ const CarDetails = ({ params }) => {
         </div>
         
         <div className="flex flex-wrap items-center gap-2">
-          
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 shadow-sm">
             <BookmarkCheck className="w-3.5 h-3.5 text-blue-600" />
             Total Booked: {bookingCount || 0} times
@@ -238,9 +240,7 @@ const CarDetails = ({ params }) => {
         </div>
       </div>
 
-    
       <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden grid grid-cols-1 md:grid-cols-12">
-        
         {/* left side*/}
         <div className="md:col-span-5 relative bg-slate-900 min-h-[260px] md:min-h-full">
           <img 
@@ -256,7 +256,6 @@ const CarDetails = ({ params }) => {
         {/* right side */}
         <div className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
           <div>
-           
             <div className="flex justify-between items-start border-b border-slate-100 pb-4">
               <div>
                 <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{carName}</h1>
@@ -274,7 +273,6 @@ const CarDetails = ({ params }) => {
               </div>
             </div>
 
-           
             <div className="grid grid-cols-2 gap-4 py-5">
               <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
                 <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
@@ -297,7 +295,6 @@ const CarDetails = ({ params }) => {
               </div>
             </div>
 
-            {/* describtion */}
             <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
                 <FileText className="w-3.5 h-3.5" /> Description
@@ -308,7 +305,6 @@ const CarDetails = ({ params }) => {
             </div>
           </div>
 
-          
           <div className="pt-4 border-t border-slate-100">
             <button 
               onClick={() => setIsOpen(true)} 
@@ -332,7 +328,6 @@ const CarDetails = ({ params }) => {
           
           <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-100 relative z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             
-            {/* modal */}
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Confirm Your Booking</h3>
@@ -346,7 +341,6 @@ const CarDetails = ({ params }) => {
               </button>
             </div>
             
-            {/* car details */}
             <div className="bg-gradient-to-r from-slate-50 to-slate-100/50 p-4 rounded-2xl border border-slate-200/60 space-y-2 mb-5">
               <p className="text-base font-bold text-slate-800">{carName}</p>
               <div className="grid grid-cols-2 gap-y-2 text-xs font-semibold text-slate-600">
@@ -359,7 +353,6 @@ const CarDetails = ({ params }) => {
               </div>
             </div>
 
-            {/* form */}
             <div className="space-y-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
@@ -389,7 +382,6 @@ const CarDetails = ({ params }) => {
               </div>
             </div>
 
-            {/* all button*/}
             <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
               <button 
                 onClick={() => setIsOpen(false)} 

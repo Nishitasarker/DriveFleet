@@ -327,8 +327,8 @@ export default function MyAddedCars() {
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-md">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl border border-gray-100">
-            <h2 className="text-xl font-bold text-gray-800">Are you absolutely sure?</h2>
-            <p className="mt-2 text-sm text-gray-500">
+            <h2 className="text-2xl font-bold text-gray-800">Are you absolutely sure?</h2>
+            <p className="mt-2 text-base text-gray-500">
               This action cannot be undone. This will permanently delete <strong>{selectedCar?.carName}</strong> from DriveFleet.
             </p>
             <div className="mt-6 flex justify-end gap-3">

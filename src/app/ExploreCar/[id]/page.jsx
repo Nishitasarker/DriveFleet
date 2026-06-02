@@ -4,19 +4,18 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link'; 
-// মডার্ন এবং ক্লিন আইকনের জন্য lucide-react ব্যবহার করা হয়েছে
 import { 
   Car, 
   Users, 
   MapPin, 
   DollarSign, 
   FileText, 
-  Calendar, 
   X, 
   CheckCircle, 
   AlertCircle,
   Clock,
-  Home 
+  Home,
+  BookmarkCheck // টোটাল বুকিং দেখানোর জন্য আইকন
 } from 'lucide-react';
 
 const CarDetails = ({ params }) => {
@@ -46,17 +45,16 @@ const CarDetails = ({ params }) => {
         console.log("Fetching token..."); 
         const tokenRes = await fetch("/api/auth/token", { credentials: "include" });
         
-        // টোকেন এপিআই যদি কোনো কারণে রেসপন্স না দেয় (HTML বা ৪MD দেয়)
         if (!tokenRes.ok) {
           console.error("Token API failed with status:", tokenRes.status);
-          setCar(null); // ৪MD পেজে নিয়ে যাওয়ার জন্য
+          setCar(null); 
           return;
         }
 
         const tokenContentType = tokenRes.headers.get("content-type");
         if (!tokenContentType || !tokenContentType.includes("application/json")) {
           console.error("Expected JSON token, got HTML");
-          setCar(null); // ৪MD পেজে নিয়ে যাওয়ার জন্য
+          setCar(null); 
           return;
         }
 
@@ -71,7 +69,6 @@ const CarDetails = ({ params }) => {
         });
         console.log("Car response status:", res.status); 
 
-        // কার এপিআই রেসপন্স ঠিক না থাকলে (যেমন ভুল আইডি হলে ৫MD বা ৪MD দিলে)
         if (!res.ok) {
           setCar(null);
           return;
@@ -94,7 +91,7 @@ const CarDetails = ({ params }) => {
         }
       } catch (err) {
         console.error("fetchCar error:", err);
-        setCar(null); // ক্যাচ ব্লকে এরর খেলেও ৪MD পেজ শো করবে
+        setCar(null); 
       } finally {
         setLoading(false);
       }
@@ -112,7 +109,6 @@ const CarDetails = ({ params }) => {
     );
   }
 
-  // API রেসপন্স না দিলে বা ভুল আইডি হলে এই কাস্টম ৪MD পেজটি দেখাবে
   if (!car) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
@@ -149,7 +145,7 @@ const CarDetails = ({ params }) => {
   const { 
     _id, carName, dailyPrice, carType, 
     seatCapacity, imageUrl, pickupLocation, 
-    availability, description 
+    availability, description, bookingCount 
   } = car;
 
   const handleBookingConfirm = async () => {
@@ -182,9 +178,6 @@ const CarDetails = ({ params }) => {
       
       const { token } = await tokenRes.json();
 
-      const { data: tokenData } = await authClient.token();
-      console.log(tokenData);
-
       const res = await fetch('http://localhost:5000/booking', {
         method: "POST",
         headers: {
@@ -197,17 +190,14 @@ const CarDetails = ({ params }) => {
       const text = await res.text();
       const data = text ? JSON.parse(text) : { success: false };
       
-      if (res.status === 400 || data.success === false) {
-        toast.error(data.message || "You have already booked this car!");
-        setIsOpen(false);
-        return;
-      }
-
       if (data.insertedId || data.success) {
         toast.success(`Success! You have successfully booked the ${carName}.`);
         setIsOpen(false);
         setSpecialNote("");
         setDriverNeeded("No");
+        
+        // রিয়েল-টাইমে UI-তে বুকিংয়ের সংখ্যা ১ বাড়িয়ে আপডেট করে দেওয়া হলো
+        setCar(prev => ({ ...prev, bookingCount: (prev.bookingCount || 0) + 1 }));
       } else {
         toast.error("Something went wrong. Please try again.");
       }
@@ -231,12 +221,21 @@ const CarDetails = ({ params }) => {
           </h2>
           <p className="text-slate-500 text-sm mt-1">Explore features and reserve your ride</p>
         </div>
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider ${
-          isAvailable ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
-        }`}>
-          <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
-          {isAvailable ? 'Available Now' : 'Rented Out'}
-        </span>
+        
+        <div className="flex flex-wrap items-center gap-2">
+          {/* বুকিং কাউন্টার ব্যাজ */}
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 shadow-sm">
+            <BookmarkCheck className="w-3.5 h-3.5 text-blue-600" />
+            Total Booked: {bookingCount || 0} times
+          </span>
+
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider ${
+            isAvailable ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+            {isAvailable ? 'Available Now' : 'Rented Out'}
+          </span>
+        </div>
       </div>
 
       {/* মেইন কার্ড কন্টেইনার */}

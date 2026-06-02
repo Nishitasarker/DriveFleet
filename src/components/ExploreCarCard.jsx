@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import React from 'react';
+import { IoLocationOutline } from "react-icons/io5";
 
 const ExploreCarCard = ({ car }) => {
   const { 
@@ -60,10 +61,10 @@ const ExploreCarCard = ({ car }) => {
         </p> */}
 
         {/* Features Grid */}
-        <div className="my-4 grid grid-cols-[100px_70px] justify-between gap-3 border-t border-b border-gray-100 py-3 text-sm text-gray-600">
+        <div className="my-4 flex justify-between gap-3 border-t border-b border-gray-100 py-3 text-sm text-gray-600">
           {/* Seats */}
           <div className="flex items-center gap-2">
-            <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <svg className="h-5 w-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span>{seatCapacity} Seats</span>
@@ -71,10 +72,7 @@ const ExploreCarCard = ({ car }) => {
           
           {/* Location */}
           <div className="flex items-center gap-2">
-            <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
+           <IoLocationOutline className='text-sky-500 h-5 w-5'/>
             <span className="capitalize">{pickupLocation}</span>
           </div>
         </div>

@@ -45,7 +45,7 @@ export function BookingCanceler({ bookingId }) {
 
             {open && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                    <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full mx-4">
+                    <div className="bg-white  rounded-2xl shadow-xl p-6 max-w-sm w-full mx-4">
                         <h2 className="text-3xl font-bold text-gray-900 mb-2">Are you sure?</h2>
                         <p className="text-base  font-medium text-gray-500 mb-6">
                             This action will permanently cancel your booking.This cannot be undone.

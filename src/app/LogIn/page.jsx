@@ -39,7 +39,7 @@ const LogInPage = () => {
             // চাইলে এখানে একটা সাইলেন্ট লোডার দিতে পারেন, অথবা ডিরেক্ট বাটন ডিজেবল থাকবে।
           },
           onSuccess: () => {
-            toast.success("Success! Redirecting...", { autoClose: 1000 });
+            toast.success("Logged in successfully!", { autoClose: 1000 });
             
             // ২. অপ্রয়োজনীয় setTimeout বাদ দিয়ে সরাসরি পুশ করা হলো। 
             // Next.js এর router.refresh() দিলে সেশন ক্লায়েন্টে দ্রুত আপডেট হয়।

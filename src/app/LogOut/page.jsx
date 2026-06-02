@@ -7,13 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function LogOutPage() {
   const router = useRouter();
-  const hasShownToast = useRef(false); // দুইবার টোস্ট রেন্ডার হওয়া আটকানোর জন্য
+  const hasShownToast = useRef(false); 
 
   useEffect(() => {
-    // Next.js StrictMode-এ যাতে ডাবল টোস্ট বা গ্লিচ না হয়
-    if (!hasShownToast.current) {
+     if (!hasShownToast.current) {
       toast.success("Successfully logged out! See you again.", {
-        toastId: "logout-success", // ইউনিক আইডি যাতে বারবার ফায়ার না হয়
+        toastId: "logout-success",
       });
       hasShownToast.current = true;
     }
@@ -21,8 +20,7 @@ export default function LogOutPage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 px-4">
-      {/* কন্টেইনারটি এখানে একদম টপে রাখা হয়েছে */}
-      <ToastContainer 
+          <ToastContainer 
         position="top-right" 
         autoClose={3000} 
         hideProgressBar={false}

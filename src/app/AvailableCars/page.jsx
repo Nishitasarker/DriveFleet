@@ -4,27 +4,19 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-// ১. হোমপেজের জন্য একটি সংক্ষিপ্ত এবং মিনিমালিস্টিক কার্ড কম্পোনেন্ট
+
 const AvailableCarCard = ({ car }) => {
     const { _id, carName, dailyPrice, carType, imageUrl, availability } = car;
     const router = useRouter();
 
     const handleViewDetails = () => {
-        // localStorage থেকে token চেক করা হচ্ছে
-        // আপনার auth system অনুযায়ী এটি পরিবর্তন করুন
-        const token = localStorage.getItem('token'); // অথবা 'accessToken', 'user', যেটি আপনি ব্যবহার করেন
-
-        // if (token) {
-        //     router.push(`/ExploreCar/${_id}`);
-        // } else {
-        //     router.push('../LogIn');
-        // }
+            const token = localStorage.getItem('token'); 
     };
 
     return (
         <div className="w-full overflow-hidden rounded-2xl bg-white border border-gray-200/60 shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.28)] flex flex-col justify-between">            
-            {/* ইমেজ সেকশন */}
-             {/* Image Section */}
+            
+{/* Image Section */}
       <div className="relative h-48 w-full bg-gray-100 flex items-center justify-center">
         <img 
           src={imageUrl} 
@@ -32,16 +24,15 @@ const AvailableCarCard = ({ car }) => {
           className="w-full h-full object-contain" 
         />
                 
-                {/* মিনি এভেইলেবিলিটি ডট */}
-                <span className="absolute top-3 right-3 rounded-full bg-white/90 backdrop-blur-sm px-2.5 py-0.5 text-[10px] font-bold uppercase text-green-600 border border-green-200 shadow-sm">
+     <span className="absolute top-3 right-3 rounded-full bg-white/90 backdrop-blur-sm px-2.5 py-0.5 text-[10px] font-bold uppercase text-green-600 border border-green-200 shadow-sm">
                     ● {availability}
                 </span>
             </div>
 
-            {/* সংক্ষিপ্ত কন্টেন্ট সেকশন */}
+         
             <div className="p-4 flex flex-col flex-grow justify-between">
                 <div>
-                    {/* কার টাইপ ও প্রাইস রো */}
+                  
                     <div className="flex items-center justify-between gap-2">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2 py-0.5 rounded">
                             {carType}
@@ -52,14 +43,13 @@ const AvailableCarCard = ({ car }) => {
                         </div>
                     </div>
 
-                    {/* গাড়ির নাম */}
+                  
                     <h3 className="mt-2 text-base font-bold text-gray-800 truncate capitalize">
                         {carName}
                     </h3>
                 </div>
 
-                {/* View Details বাটন — এখন auth check সহ */}
-                <Link href={`/ExploreCar/${_id}`}>
+                            <Link href={`/ExploreCar/${_id}`}>
                 <div className="mt-4">
                     <button
                         onClick={handleViewDetails}
@@ -75,7 +65,7 @@ const AvailableCarCard = ({ car }) => {
     );
 };
 
-// ২. মেইন এভেইলেবল কার সেকশন কম্পোনেন্ট
+
 const AvailableCars = () => {
     const [availableCars, setAvailableCars] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -83,7 +73,7 @@ const AvailableCars = () => {
     useEffect(() => {
         const fetchAvailableCars = async () => {
             try {
-                const res = await fetch('http://localhost:5000/destination', { cache: 'no-store' });
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destination`, { cache: 'no-store' });
                 const data = await res.json();
                 
                 const filtered = data.filter(car => car.availability === 'Available');

@@ -24,14 +24,14 @@ const MyBookings = async () => {
 
     const currentUserEmail = user.email.trim().toLowerCase();
 
-    // ✅ token নেওয়া হচ্ছে
+   
     const tokenRes = await auth.api.getToken({
         headers: await headers()
     });
     const token = tokenRes?.token;
 
-    // ✅ token সহ fetch করা হচ্ছে
-    const res = await fetch(`http://localhost:5000/booking/${encodeURIComponent(currentUserEmail)}`, {
+    
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${encodeURIComponent(currentUserEmail)}`, {
         cache: 'no-store',
         headers: {
             Authorization: `Bearer ${token}`
@@ -57,10 +57,10 @@ const MyBookings = async () => {
                 </div>
 
                 {bookingList.length === 0 ? (
-                    /* Modern Moving Car Empty State */
+                  
                     <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-dashed border-gray-300 shadow-sm px-4 overflow-hidden">
                         
-                        {/* রোডের ড্যাশড বর্ডার এবং কার কন্টেইনার */}
+                        
                         <div className="relative mb-6 w-48 h-12 border-b-2 border-dashed border-gray-200 flex items-end justify-center">
                             <div 
                                 className="text-5xl pb-1"
@@ -70,7 +70,7 @@ const MyBookings = async () => {
                             </div>
                         </div>
 
-                        {/* কাস্টম কার ড্রাইভিং অ্যানিমেশন স্টাইল */}
+                       
                         <style>{`
                             @keyframes drive {
                                 0% { transform:scaleX(-1) translateX(70px); }
@@ -85,7 +85,7 @@ const MyBookings = async () => {
                     </div>
                 ) : (
                     <>
-                        {/* Desktop/Tablet Table */}
+                     
                         <div className="hidden md:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
@@ -155,7 +155,7 @@ const MyBookings = async () => {
                             </div>
                         </div>
 
-                        {/* Mobile Card Layout */}
+                       
                         <div className="md:hidden flex flex-col gap-4">
                             {bookingList.map((booking) => {
                                 const bookingDate = booking.bookedAt

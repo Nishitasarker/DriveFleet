@@ -17,7 +17,7 @@ export default function AddCarForm() {
     description: '',
   });
 
-  // Input এর ভ্যালু চেঞ্জ হলে স্টেট আপডেট করার ফাংশন
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -26,13 +26,12 @@ export default function AddCarForm() {
     }));
   };
 
-  // ফর্ম সাবমিট হ্যান্ডলার
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // ডেটাগুলোকে সঠিক ফরম্যাটে কনভার্ট করে নেওয়া (যেমন: নাম্বার)
-    const carData = {
+       const carData = {
       ...formData,
       dailyPrice: parseFloat(formData.dailyPrice),
       seatCapacity: parseInt(formData.seatCapacity),
@@ -40,23 +39,22 @@ export default function AddCarForm() {
 
     try {
       const { data: tokenData } = await authClient.token();
-      const response = await fetch("http://localhost:5000/destination", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destination`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
           authorization: `Bearer ${tokenData?.token}`
         },
-        body: JSON.stringify(carData) // সরাসরি প্রসেসড ডেটা পাঠানো হচ্ছে
+        body: JSON.stringify(carData)
       });
 
-      const data = await response.json(); // await এবং সঠিক ভেরিয়েবল ব্যবহার করা হয়েছে
+      const data = await response.json(); 
       console.log("Server Response:", data);
 
       if (response.ok) {
-        // সফল মেসেজ টোস্ট
-        toast.success('Car added successfully!');
+           toast.success('Car added successfully!');
         
-        // ফর্ম রিসেট করার জন্য
+        
         setFormData({
           carName: '',
           dailyPrice: '',
@@ -68,12 +66,12 @@ export default function AddCarForm() {
           description: '',
         });
       } else {
-        // সার্ভার এরর টোস্ট
+        
         toast.error('Something went wrong on the server!');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      // কানেকশন ফেইল্ড টোস্ট
+     
       toast.error('Failed to connect to the server!');
     } finally {
       setLoading(false);

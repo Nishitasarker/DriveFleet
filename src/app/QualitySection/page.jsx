@@ -1,10 +1,10 @@
+"use client";
 import React, { useState } from 'react';
 
 const QualitySection = () => {
-  // একটি স্টেট দিয়ে ট্র্যাক করা হচ্ছে কোন ট্যাবটি অ্যাক্টিভ আছে
-  const [activeTab, setActiveTab] = useState('luxury');
+    const [activeTab, setActiveTab] = useState('luxury');
 
-  // ট্যাবগুলোর ডাটা অবজেক্ট
+ 
   const tabData = {
     luxury: {
       text: "We offer a meticulously curated collection of the most sought-after luxury vehicles on the market. Whether you prefer the sporty allure of a high-performance sports car, the sophistication of a sleek and luxurious sedan, or the versatility of a premium SUV, we have the perfect car to match your discerning taste.",
@@ -21,10 +21,10 @@ const QualitySection = () => {
     <section className="min-h-screen w-full bg-slate-50 flex items-center justify-center py-12 px-4 md:px-8">
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-white rounded-2xl shadow-sm overflow-hidden">
         
-        {/* বাম দিকের ইমেজ সেকশন */}
+        
         <div className="relative w-full h-[350px] md:h-[500px] lg:h-[600px]">
           <img 
-            src="/Quality.jpg" // আপনার ইমেজের সঠিক পাথ এখানে দিন
+            src="/Quality.jpg" 
             alt="Clients in a car" 
             className="w-full h-full object-cover"
           />
@@ -47,8 +47,8 @@ const QualitySection = () => {
                 onClick={() => setActiveTab(tab)}
                 className={`px-6 py-3 text-xs md:text-sm font-bold tracking-wider uppercase rounded-md transition-all duration-300 shadow-sm ${
                   activeTab === tab
-                    ? 'bg-sky-500 text-white scale-105' // অ্যাক্টিভ বাটনের স্টাইল
-                    : 'bg-slate-50 text-slate-500 hover:bg-slate-100' // ইন-অ্যাক্টিভ বাটনের স্টাইল
+                    ? 'bg-sky-500 text-white scale-105' 
+                    : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
                 }`}
               >
                 {tab}

@@ -18,7 +18,7 @@ const ExploreCar = () => {
                 if (searchName) params.append('search', searchName);
                 if (selectedType) params.append('carType', selectedType);
 
-                const res = await fetch(`http://localhost:5000/destination?${params.toString()}`, { cache: 'no-store' });
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destination?${params.toString()}`, { cache: 'no-store' });
                 const data = await res.json();
                 setCars(Array.isArray(data) ? data : []);
             } catch (error) {

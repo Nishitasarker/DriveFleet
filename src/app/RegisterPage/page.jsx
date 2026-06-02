@@ -48,19 +48,18 @@ const RegisterPage = () => {
     
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name");
-    let image = formData.get("image"); // const variables change kora jay na, tai let kora holo
+    let image = formData.get("image"); 
     const email = formData.get("email");
     const password = formData.get("password");
 
-    // ✨ লজিক: ইউজার যদি ইমেজ না দেয় (ফাঁকা রাখে), তবে ডিফল্ট '/user.png' সেট হবে
-    if (!image || image.trim() === "") {
+       if (!image || image.trim() === "") {
       image = "/user.png";
     }
 
     try {
       await authClient.signUp.email({
         name,
-        image, // এহনে ডিফল্ট বা ইউজারের দেওয়া ইউআরএল চলে যাবে
+        image, 
         email,
         password,
         autoSignIn: false, 

@@ -15,7 +15,7 @@ import {
   AlertCircle,
   Clock,
   Home,
-  BookmarkCheck // টোটাল বুকিং দেখানোর জন্য আইকন
+  BookmarkCheck 
 } from 'lucide-react';
 
 const CarDetails = ({ params }) => {
@@ -62,7 +62,7 @@ const CarDetails = ({ params }) => {
         console.log("Token received:", !!token); 
 
         console.log("Fetching car id:", unwrappedParams.id); 
-        const res = await fetch(`http://localhost:5000/destination/${unwrappedParams.id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/destination/${unwrappedParams.id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -178,7 +178,7 @@ const CarDetails = ({ params }) => {
       
       const { token } = await tokenRes.json();
 
-      const res = await fetch('http://localhost:5000/booking', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -196,7 +196,7 @@ const CarDetails = ({ params }) => {
         setSpecialNote("");
         setDriverNeeded("No");
         
-        // রিয়েল-টাইমে UI-তে বুকিংয়ের সংখ্যা ১ বাড়িয়ে আপডেট করে দেওয়া হলো
+       
         setCar(prev => ({ ...prev, bookingCount: (prev.bookingCount || 0) + 1 }));
       } else {
         toast.error("Something went wrong. Please try again.");
@@ -213,7 +213,7 @@ const CarDetails = ({ params }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
-      {/* হেডার সেকশন */}
+   
       <div className="w-full max-w-4xl mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -223,7 +223,7 @@ const CarDetails = ({ params }) => {
         </div>
         
         <div className="flex flex-wrap items-center gap-2">
-          {/* বুকিং কাউন্টার ব্যাজ */}
+          
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 shadow-sm">
             <BookmarkCheck className="w-3.5 h-3.5 text-blue-600" />
             Total Booked: {bookingCount || 0} times
@@ -238,10 +238,10 @@ const CarDetails = ({ params }) => {
         </div>
       </div>
 
-      {/* মেইন কার্ড কন্টেইনার */}
+    
       <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden grid grid-cols-1 md:grid-cols-12">
         
-        {/* বাম পাশ: ইমেজ সেকশন */}
+        {/* left side*/}
         <div className="md:col-span-5 relative bg-slate-900 min-h-[260px] md:min-h-full">
           <img 
             src={imageUrl || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=600"} 
@@ -253,10 +253,10 @@ const CarDetails = ({ params }) => {
           </div>
         </div>
 
-        {/* ডান পাশ: কার ডিটেইলস */}
+        {/* right side */}
         <div className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
           <div>
-            {/* প্রাইস এবং টাইটেল */}
+           
             <div className="flex justify-between items-start border-b border-slate-100 pb-4">
               <div>
                 <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{carName}</h1>
@@ -274,7 +274,7 @@ const CarDetails = ({ params }) => {
               </div>
             </div>
 
-            {/* স্পেসিফিকেশন গ্রিড */}
+           
             <div className="grid grid-cols-2 gap-4 py-5">
               <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
                 <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
@@ -297,7 +297,7 @@ const CarDetails = ({ params }) => {
               </div>
             </div>
 
-            {/* ডেসক্রিপশন */}
+            {/* describtion */}
             <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
                 <FileText className="w-3.5 h-3.5" /> Description
@@ -308,7 +308,7 @@ const CarDetails = ({ params }) => {
             </div>
           </div>
 
-          {/* বুকিং বাটন */}
+          
           <div className="pt-4 border-t border-slate-100">
             <button 
               onClick={() => setIsOpen(true)} 
@@ -325,14 +325,14 @@ const CarDetails = ({ params }) => {
         </div>
       </div>
 
-      {/* বুকিং কনফার্মেশন মোডাল */}
+      {/* modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={() => setIsOpen(false)} />
           
           <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-100 relative z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             
-            {/* মোডাল হেডার */}
+            {/* modal */}
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Confirm Your Booking</h3>
@@ -346,7 +346,7 @@ const CarDetails = ({ params }) => {
               </button>
             </div>
             
-            {/* কার এর সারসংক্ষেপ */}
+            {/* car details */}
             <div className="bg-gradient-to-r from-slate-50 to-slate-100/50 p-4 rounded-2xl border border-slate-200/60 space-y-2 mb-5">
               <p className="text-base font-bold text-slate-800">{carName}</p>
               <div className="grid grid-cols-2 gap-y-2 text-xs font-semibold text-slate-600">
@@ -359,7 +359,7 @@ const CarDetails = ({ params }) => {
               </div>
             </div>
 
-            {/* ইনপুট ফর্ম */}
+            {/* form */}
             <div className="space-y-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
@@ -389,7 +389,7 @@ const CarDetails = ({ params }) => {
               </div>
             </div>
 
-            {/* অ্যাকশন বাটনসমূহ */}
+            {/* all button*/}
             <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
               <button 
                 onClick={() => setIsOpen(false)} 

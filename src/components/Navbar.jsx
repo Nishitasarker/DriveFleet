@@ -9,7 +9,6 @@ import { authClient } from "@/lib/auth-client";
 import { toast, ToastContainer } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css";
 
-// Lucide Icons থেকে আইকন ইমপোর্ট করা হয়েছে
 import { PlusCircle, Calendar, LayoutGrid, LogOut, Menu, X, Home, Car } from "lucide-react";
 
 const Navbar = () => {
@@ -20,8 +19,7 @@ const Navbar = () => {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   
-  // ড্রপডাউন এবং সাইডবার ওপেন/ক্লোজ স্টেট
-  const [isOpen, setIsOpen] = useState(false);
+   const [isOpen, setIsOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   
@@ -30,15 +28,13 @@ const Navbar = () => {
   useEffect(() => {
     setMounted(true);
 
-    // বাইরে ক্লিক করলে প্রোফাইল ড্রপডাউন বন্ধ করার লজিক
-    const handleClickOutside = (event) => {
+       const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
 
-    // স্ক্রল ট্র্যাকিং লজিক (Scroll করলে bg-gray-50 হবে)
-    const handleScroll = () => {
+       const handleScroll = () => {
       if (window.scrollY > 10) {
         setIsScrolled(true);
       } else {
@@ -55,37 +51,33 @@ const Navbar = () => {
     };
   }, []);
 
-  // রুট চেঞ্জ হলে সব মেনু বন্ধ হবে
+ 
   useEffect(() => {
     setIsOpen(false);
     setIsDrawerOpen(false);
   }, [pathname]);
 
-  // ফিক্সড লগআউট ফাংশন (কোনো রিডাইরেকশন ছাড়া শুধু টোস্ট দেখাবে)
-  const handleLogOut = async () => {
+   const handleLogOut = async () => {
     try {
       await authClient.signOut();
       localStorage.removeItem("user");
       
-      // ওপেন থাকা মেনু ও ড্রয়ার বন্ধ করা
+      
       setIsOpen(false);
       setIsDrawerOpen(false);
       
-      // ১. শুধুমাত্র একটি সাকসেস টোস্ট মেসেজ শো করবে
-      toast.success("Successfully logged out! See you again.");
+            toast.success("Successfully logged out! See you again.");
       
-      // ২. কারেন্ট পেজ রিফ্রেশ হবে যাতে লগইন/রেজিস্টার বাটন ব্যাক করে
-      router.refresh();
+            router.refresh();
 
     } catch (error) {
       toast.error("Logout failed. Please try again.");
     }
   };
 
-  // লগআউট অবস্থায় প্রোটেক্টেড পেজে ক্লিক করলে লগইন পেজে রিডাইরেক্ট করার ফাংশন
-  const handleProtectedNavigation = (e, targetPath) => {
+    const handleProtectedNavigation = (e, targetPath) => {
     if (!session) {
-      e.preventDefault(); // নরমাল লিঙ্ক ব্রাউজিং আটকাবে
+      e.preventDefault(); 
       toast.warn("Please login first to access this page!");
       router.push("/LogIn");
     }
@@ -97,14 +89,13 @@ const Navbar = () => {
 
   return (
     <>
-      {/* ==================== মেইন নেভিগেশন বার ==================== */}
-      <div 
+           <div 
         className={`w-full px-4 md:px-20 h-16 md:h-20 flex justify-between items-center border-b border-gray-100 sticky top-0 z-50 transition-colors duration-300 ${
           isScrolled ? "bg-gray-50/95 backdrop-blur-md shadow-sm" : "bg-white"
         }`}
       >
         
-        {/* ১. বামে: লোগো */}
+        {/* left side*/}
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center justify-center gap-1.5 md:gap-2">
             <Image src="/sedan.png" alt="DriveFleet Logo" height={35} width={35} className="md:hidden" priority />
@@ -115,7 +106,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* ২. মাঝখানে: মেইন নেভিগেশন মেনু (ডেস্কটপ) */}
+        {/* middle*/}
         <div className="hidden lg:flex items-center">
           <ul className="flex items-center gap-8 font-medium text-lg">
             <li>
@@ -149,17 +140,17 @@ const Navbar = () => {
           </ul>
         </div>
 
-        {/* ৩. ডানে: প্রোফাইল ড্রপডাউন বা লগইন/রেজিস্টার বাটন গ্রুপ */}
+        {/*right side */}
         <div className="flex items-center gap-3" ref={dropdownRef}>
           {!session ? (
             <>
-              {/* ডেস্কটপ লগআউট স্টেট (Login / Register বাটন) */}
+             
               <div className="hidden lg:flex items-center gap-3">
                 <Button onPress={() => router.push("/LogIn")} className={`font-semibold rounded-xl text-lg border-2 transition-all duration-200 ${pathname === "/LogIn" ? "bg-blue-500 text-white border-blue-200 px-4 py-1" : "bg-white text-blue-500 border-blue-200 px-4 py-1 hover:bg-blue-50/50"}`}>Login</Button>
                 <Button onPress={() => router.push("/RegisterPage")} className={`font-semibold text-lg rounded-xl border-2 transition-all duration-200 ${pathname === "/RegisterPage" ? "bg-blue-500 text-white border-blue-200 px-4 py-1" : "bg-slate-50/50 text-blue-500 border-blue-200 px-4 py-1 hover:bg-blue-50/50"}`}>Register</Button>
               </div>
 
-              {/* মোবাইল হ্যামবার্গার বাটন (লগআউট অবস্থায়) */}
+             
               <button onClick={() => setIsDrawerOpen(true)} className="p-1.5 text-slate-800 lg:hidden focus:outline-none">
                 <Menu size={24} />
               </button>
@@ -169,7 +160,7 @@ const Navbar = () => {
               <h2 className="hidden text-lg font-bold md:block  text-gray-700 ">{user?.name ? user.name.split(' ')[0].toUpperCase() : ''}</h2>
               
               <div className="relative">
-                {/* অ্যাভাটার বাটন */}
+              
                 <button 
                   onClick={() => setIsOpen(!isOpen)} 
                   className="avatar block cursor-pointer focus:outline-none focus:scale-105 transition-transform"
@@ -179,8 +170,7 @@ const Navbar = () => {
                   </div>
                 </button>
                 
-                {/* প্রোফাইলカード ড্রপডাউন (ডেস্কটপ লগইন অবস্থায়) */}
-                {isOpen && (
+                                {isOpen && (
                   <div className="absolute right-0 mt-3 w-72 bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-100 p-5 flex flex-col z-[100] animate-in fade-in slide-in-from-top-2 duration-150">
                     <div className="pb-4 mb-3 border-b border-gray-100">
                       <p className="font-bold text-gray-900 text-xl tracking-tight leading-tight">{user?.name}</p>
@@ -209,7 +199,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              {/* মোবাইল হ্যামবার্গার বাটন (লগইন অবস্থায়) */}
+             
               <button onClick={() => setIsDrawerOpen(true)} className="p-1.5 text-slate-800 lg:hidden focus:outline-none">
                 <Menu size={24} />
               </button>
@@ -218,13 +208,12 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* ==================== মোবাইল রেসপনসিভ সাইডবার ড্রয়ার ==================== */}
-      {isDrawerOpen && (
+            {isDrawerOpen && (
         <div className="fixed inset-0 z-[200] lg:hidden flex">
           <div className="fixed inset-0 bg-black/30 backdrop-blur-xs transition-opacity" onClick={() => setIsDrawerOpen(false)}></div>
 
           <div className="relative w-full max-w-sm ml-auto bg-white h-full shadow-2xl flex flex-col p-6 animate-in slide-in-from-right duration-150">
-            {/* ড্রয়ার হেডার */}
+            
             <div className="flex justify-between items-center pb-6 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <Image src="/sedan.png" alt="DriveFleet Logo" height={50} width={50} priority />
@@ -237,7 +226,7 @@ const Navbar = () => {
               </button>
             </div>
 
-            {/* ড্রয়ার লিঙ্কসমূহ */}
+          
             <div className="flex-1 flex flex-col mt-8 justify-between">
               <div className="flex flex-col gap-3.5">
                 <Link href="/" className={`flex items-center gap-4 px-5 py-4 text-lg font-bold rounded-2xl border-l-4 transition-all duration-150 ${pathname === "/" ? "bg-blue-50 text-slate-900 border-cyan-400" : "text-slate-600 border-transparent hover:bg-gray-50/70"}`}>
@@ -266,8 +255,7 @@ const Navbar = () => {
                 </Link>
               </div>
 
-              {/* মোবাইল ড্রয়ারে লগইন / লগআউট অ্যাকশন বাটন */}
-              <div className="pb-6">
+                       <div className="pb-6">
                 {session ? (
                   <button 
                     onClick={handleLogOut} 
@@ -292,8 +280,7 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* 🚀 গ্লোবাল টোস্ট কন্টেইনার যোগ করা হলো, যা লগআউট মেসেজ রেন্ডার করবে */}
-      <ToastContainer 
+            <ToastContainer 
         position="top-right" 
         autoClose={2500} 
         hideProgressBar={false}

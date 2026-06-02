@@ -34,16 +34,12 @@ const LogInPage = () => {
         email,
         password,
         fetchOptions: {
-          // ১. রিকোয়েস্ট পাঠানো মাত্রই আমরা ইউজারকে জানাচ্ছি যে প্রসেস শুরু হয়েছে
-          onRequest: () => {
-            // চাইলে এখানে একটা সাইলেন্ট লোডার দিতে পারেন, অথবা ডিরেক্ট বাটন ডিজেবল থাকবে।
-          },
+         onRequest: () => {
+                      },
           onSuccess: () => {
             toast.success("Logged in successfully!", { autoClose: 1000 });
             
-            // ২. অপ্রয়োজনীয় setTimeout বাদ দিয়ে সরাসরি পুশ করা হলো। 
-            // Next.js এর router.refresh() দিলে সেশন ক্লায়েন্টে দ্রুত আপডেট হয়।
-            router.push('/');
+               router.push('/');
             router.refresh(); 
           },
           onError: (ctx) => {
@@ -66,8 +62,7 @@ const LogInPage = () => {
     try {
       await authClient.signIn.social({
         provider: "google",
-        // ৩. সোশ্যাল লগইনের ক্ষেত্রে callbackURL সরাসরি দিয়ে দিলে Better-auth নিজেই রিডাইরেকশন হ্যান্ডেল করে।
-        callbackURL: "/", 
+     callbackURL: "/", 
       });
     } catch (err) {
       toast.error("Google authentication service failed.");
@@ -76,8 +71,7 @@ const LogInPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      {/* ৪. টোস্টের স্পীড বাড়ানোর জন্য ক্লোজ টাইম কমিয়ে ১.৫ সেকেন্ড করা হয়েছে */}
-      <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} />
+           <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} />
       
       <Card className="w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 space-y-6">
         
@@ -88,7 +82,7 @@ const LogInPage = () => {
 
         <Form className="flex flex-col gap-4" onSubmit={onSubmit} autoComplete="off">
 
-          {/* Email Field */}
+          
           <TextField
             isRequired
             name="email"
@@ -167,7 +161,7 @@ const LogInPage = () => {
             </p>
           </div>
 
-          {/* Divider */}
+          
           <div className="relative flex items-center py-2">
             <div className="flex-grow border-t border-gray-200"></div>
             <span className="flex-shrink mx-4 text-gray-400 font-medium text-xs tracking-wider uppercase">OR</span>

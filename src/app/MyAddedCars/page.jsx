@@ -22,11 +22,10 @@ export default function MyAddedCars() {
     pickupLocation: '',
   });
 
-  // ১. ইউজারের অ্যাড করা গাড়িগুলো সার্ভার থেকে ফেচ করা
-  const fetchMyCars = async () => {
+    const fetchMyCars = async () => {
     try {
       const { data: tokenData } = await authClient.token();
-      const response = await fetch("http://localhost:5000/my-cars", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/my-cars`, {
         headers: {
           authorization: `Bearer ${tokenData?.token}`,
         },
@@ -70,7 +69,7 @@ export default function MyAddedCars() {
         dailyPrice: parseFloat(updateFormData.dailyPrice),
       };
 
-      const response = await fetch(`http://localhost:5000/cars/${selectedCar._id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/cars/${selectedCar._id}`, {
         method: 'PUT',
         headers: {
           'content-type': 'application/json',
@@ -91,7 +90,7 @@ export default function MyAddedCars() {
     }
   };
 
-  // ৪. ডিলিট কনফার্মেশন হ্যান্ডলার
+  
   const handleDeleteClick = (car) => {
     setSelectedCar(car);
     setIsDeleteModalOpen(true);
@@ -100,7 +99,7 @@ export default function MyAddedCars() {
   const handleConfirmDelete = async () => {
     try {
       const { data: tokenData } = await authClient.token();
-      const response = await fetch(`http://localhost:5000/cars/${selectedCar._id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/cars/${selectedCar._id}`, {
         method: 'DELETE',
         headers: {
           authorization: `Bearer ${tokenData?.token}`,
@@ -169,7 +168,7 @@ export default function MyAddedCars() {
             </a>
           </div>
         ) : (
-          /* হরিজন্টাল রো-ভিত্তিক লিস্ট লেআউট */
+          
           <div className="flex flex-col gap-4">
             {cars.map((car) => (
               <div 
@@ -224,8 +223,7 @@ export default function MyAddedCars() {
         )}
       </div>
 
-      {/* --- UPDATE MODAL (সফট লাইট ব্যাকগ্রাউন্ড + মডার্ন ব্লার ইফেক্ট) --- */}
-      {isUpdateModalOpen && (
+          {isUpdateModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-md">
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-gray-100">
             <h2 className="mb-4 text-xl font-bold text-gray-800">Update Car: {selectedCar?.carName}</h2>
@@ -323,8 +321,7 @@ export default function MyAddedCars() {
         </div>
       )}
 
-      {/* --- DELETE CONFIRMATION MODAL (সফট লাইট ব্যাকগ্রাউন্ড + মডার্ন ব্লার ইফেক্ট) --- */}
-      {isDeleteModalOpen && (
+           {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-md">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl border border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800">Are you absolutely sure?</h2>

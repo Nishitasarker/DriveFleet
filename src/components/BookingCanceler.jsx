@@ -5,16 +5,14 @@ import { Trash } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation"; // <-- ১. useRouter ইম্পোর্ট করুন
 
-export function BookingCanceler({ bookingId, onDeleteSuccess }) {
+export function BookingCanceler({ bookingId }) {
     const [open, setOpen] = useState(false);
+    const router = useRouter(); // <-- ২. রাউটার ইনিশিয়েট করুন
 
     const handleCancelBooking = async () => {
         setOpen(false);
-        
-        if (onDeleteSuccess) {
-            onDeleteSuccess(bookingId); 
-        }
         
         toast.success("Booking canceled successfully!", { 
             duration: 800,
@@ -25,13 +23,20 @@ export function BookingCanceler({ bookingId, onDeleteSuccess }) {
             const tokenRes = await authClient.token();
             const token = tokenRes?.token || tokenRes?.data?.token || tokenRes;
 
-            await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${bookingId}`, {
                 method: "DELETE",
                 headers: {
                     "content-type": "application/json",
                     "authorization": `Bearer ${token}`
                 }
             });
+
+            if (res.ok) {
+                // <-- ৩. সার্ভারে ডিলিট সফল হলে UI ডাটা রিফ্রেশ করবে
+                router.refresh(); 
+            } else {
+                toast.error("Failed to delete from server.");
+            }
         } catch (err) {
             console.error("Background cancel failed:", err);
             toast.error("Failed to sync with server. Please reload.", { duration: 1500 });

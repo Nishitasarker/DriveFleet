@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import {
   Card,
@@ -19,6 +20,8 @@ import { authClient } from '@/lib/auth-client';
 const LogInPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +72,10 @@ const LogInPage = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
            <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} />
@@ -110,7 +117,7 @@ const LogInPage = () => {
             isRequired
             minLength={6} 
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             autoComplete="new-password"
             className="w-full"
             validate={(value) => {
@@ -127,11 +134,26 @@ const LogInPage = () => {
             }}
           >
             <Label className="text-sm font-semibold text-gray-700">Password</Label>
-            <Input 
-              placeholder="Enter your password" 
-              autoComplete="new-password"
-              className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm"
-            />
+           <div className="relative mt-1">
+              <Input 
+                placeholder="Enter your password" 
+                autoComplete="new-password"
+                className="w-full px-3 py-2 pr-11 border border-gray-200 rounded-xl text-sm"
+              />
+              
+              {/* React Icons বাটন টগল */}
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+              >
+                {showPassword ? (
+                  <FaEyeSlash size={18} /> 
+                ) : (
+                  <FaEye size={18} />    
+                )}
+              </button>
+            </div>
             <Description className="text-[11px] text-gray-400 mt-1 block">
               Must be at least 6 characters with 1 uppercase and 1 lowercase letter
             </Description>

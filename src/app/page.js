@@ -39,9 +39,11 @@ export default function Home() {
               <button className="bg-sky-500 text-white hover:bg-sky-600 transition-colors duration-200 font-bold px-8 py-3 rounded-lg shadow-lg shadow-sky-500/20 text-base md:text-base cursor-pointer">
                 Rent a Car
               </button>
-              <button className="bg-white text-sky-600 border border-sky-500 hover:bg-sky-50 transition-colors duration-200 font-bold px-8 py-3 rounded-lg shadow-md text-sm md:text-base cursor-pointer">
+
+          <Link href="/ExploreCar">
+          <button className="bg-white text-sky-600 border border-sky-500 hover:bg-sky-50 transition-colors duration-200 font-bold px-8 py-3 rounded-lg shadow-md text-sm md:text-base cursor-pointer">
                 Explore Cars
-              </button>
+              </button></Link>    
             </div>      
           </div>
         </div>

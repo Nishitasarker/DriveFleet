@@ -5,11 +5,11 @@ import { Trash } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import toast, { Toaster } from "react-hot-toast";
-import { useRouter } from "next/navigation"; // <-- ১. useRouter ইম্পোর্ট করুন
+import { useRouter } from "next/navigation"; 
 
 export function BookingCanceler({ bookingId }) {
     const [open, setOpen] = useState(false);
-    const router = useRouter(); // <-- ২. রাউটার ইনিশিয়েট করুন
+    const router = useRouter(); 
 
     const handleCancelBooking = async () => {
         setOpen(false);
@@ -32,8 +32,7 @@ export function BookingCanceler({ bookingId }) {
             });
 
             if (res.ok) {
-                // <-- ৩. সার্ভারে ডিলিট সফল হলে UI ডাটা রিফ্রেশ করবে
-                router.refresh(); 
+                               router.refresh(); 
             } else {
                 toast.error("Failed to delete from server.");
             }

@@ -40,11 +40,13 @@ const LogInPage = () => {
          onRequest: () => {
                       },
           onSuccess: () => {
-            toast.success("Logged in successfully!", { autoClose: 1000 });
-            
-               router.push('/');
-            router.refresh(); 
-          },
+  toast.success("Logged in successfully!", { autoClose: 1000 });
+  
+  setTimeout(() => {
+    router.push('/');
+    router.refresh();
+  }, 1200); 
+},
           onError: (ctx) => {
             setLoading(false);
             if (ctx.error.status === 401 || ctx.error.code === "USER_NOT_FOUND") {
@@ -141,7 +143,7 @@ const LogInPage = () => {
                 className="w-full px-3 py-2 pr-11 border border-gray-200 rounded-xl text-sm"
               />
               
-              {/* React Icons বাটন টগল */}
+             
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
